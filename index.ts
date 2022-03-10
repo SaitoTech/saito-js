@@ -1,3 +1,5 @@
+import {WasmSlip, WasmTransaction} from "../saito-workspace/saito-wasm/pkg";
+
 export default class Saito {
     private static instance: Saito = new Saito();
     private static wasmInstance: any;
@@ -17,7 +19,16 @@ export default class Saito {
         }
         return Saito.instance;
     }
-    
+
+    public convertTransactionForApplication() {
+        let slip = new WasmSlip();
+        let transaction = new WasmTransaction();
+
+    }
+
+    public convertTransactionForCore() {
+
+    }
 }
 
 (async () => {

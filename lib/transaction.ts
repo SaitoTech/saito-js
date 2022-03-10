@@ -1,3 +1,10 @@
-export default class Transaction{
-    
+export default class Transaction {
+    private saitoTransaction: any;
+
+    public constructor() {
+    }
+
+    public getMessage() {
+
+    }
 }
