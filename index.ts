@@ -41,8 +41,19 @@ export default class Saito {
         // console.log("2 saito = ", saito);
         // let s = await saito;
         // console.log("3 saito = ", s);
-
-        let saito = await import("saito-wasm");
+        let saito;
+        if (typeof window === "undefined") {
+            console.log("loading server lib");
+            // @ts-ignore
+            saito = await import("saito-wasm/dist/server");
+        } else {
+            console.log("loading browser lib");
+            // @ts-ignore
+            saito = await import("saito-wasm/dist/browser");
+        }
+        
+        // @ts-ignore
+        // saito = await import("saito-wasm/dist/index.node");
         console.log("1111111111 : ", saito);
         // console.log(s);
 

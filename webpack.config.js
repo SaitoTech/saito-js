@@ -20,23 +20,52 @@ module.exports = {
         })
     ],
     module: {
-        rules: [{
-            test: /\.tsx?$/,
-            loader: "ts-loader",
-            exclude: /(node_modules)/
-        }, {
-            test: /\.wasm$/,
-            type: "javascript/auto",
-            loader: "file-loader",
-            options: {
-                publicPath: "dist/"
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: "ts-loader",
+                exclude: /(node_modules)/
+            },
+            // {
+            //     test: /\.wasm$/,
+            //     type: "javascript/auto",
+            //     loader: "file-loader",
+            //     options: {
+            //         publicPath: "dist/"
+            //     }
+            // },
+            {
+                test: /\.wasm$/,
+                type: "asset/inline",
+            },
+        ],
+        parser: {
+            javascript: {
+                dynamicImportMode: 'eager'
             }
-        }]
+        }
+    },
+    resolve: {
+        extensions: [".ts", ".tsx", ".js"],
+        fallback: {
+            "fs": false,
+            "tls": false,
+            "net": false,
+            "url": require.resolve("url/"),
+            "path": require.resolve("path-browserify"),
+            "zlib": false,
+            "http": false,
+            "https": false,
+            // "stream": require.resolve("stream-browserify"),
+            // "buffer": require.resolve("buffer"),
+            // "crypto": require.resolve("crypto-browserify"),
+            // "crypto-browserify": require.resolve("crypto-browserify")
+        }
     },
     experiments: {
         asyncWebAssembly: true,
-        // syncWebAssembly: true
+        syncWebAssembly: true
     },
-    // target: "web",
+    target: "web",
     mode: "development"
 };
