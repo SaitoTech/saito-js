@@ -41,9 +41,8 @@ export async function initialize(configs: any, sharedMethods: SharedMethods) {
             return s.default;
         })
         .then((s) => {
-            Saito.instance = s;
+            Saito.setLibInstance(s);
 
             return Saito.initialize(configs, sharedMethods);
         });
-
 }

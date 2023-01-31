@@ -1,12 +1,14 @@
 import SharedMethods from "./shared_methods";
 
 export default class Saito {
-    static instance: any;
+    private static instance: Saito;
+    private static libInstance: any;
     sockets: Map<bigint, any> = new Map<bigint, any>();
     nextIndex: bigint = BigInt(0);
 
 
     public static async initialize(configs: any, sharedMethods: SharedMethods) {
+        this.libInstance = new Saito();
 
         // @ts-ignore
         globalThis.shared_methods = {
@@ -40,21 +42,29 @@ export default class Saito {
             fetch_block_from_peer: (hash: Uint8Array, peer_index: bigint, url: string) => {
                 console.log("fetching block : " + url);
                 sharedMethods.fetchBlockFromPeer(url).then((buffer: Uint8Array) => {
-                    Saito.getInstance().process_fetched_block(buffer, hash, peer_index);
+                    Saito.getLibInstance().process_fetched_block(buffer, hash, peer_index);
                 })
             }
         };
 
-        await Saito.instance.initialize(configs);
+        await Saito.getLibInstance().initialize(configs);
         console.log("saito initialized");
 
         setInterval(() => {
-            Saito.instance.process_timer_event(BigInt(100));
+            Saito.getLibInstance().process_timer_event(BigInt(100));
         }, 100);
     }
 
-    public static getInstance(): any {
+    public static getInstance(): Saito {
         return Saito.instance;
+    }
+
+    public static getLibInstance(): any {
+        return Saito.libInstance;
+    }
+
+    public static setLibInstance(instance: any) {
+        Saito.libInstance = instance;
     }
 
     public addNewSocket(socket: any): bigint {
