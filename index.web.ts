@@ -1,8 +1,8 @@
 import Saito from './saito';
 import SharedMethods from "./shared_methods";
 
-let cr = require('crypto');
-globalThis.crypto = cr.webcrypto;
+// let cr = require('crypto');
+// globalThis.crypto = cr.webcrypto;
 
 // let configs = {
 //     "server": {
