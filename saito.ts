@@ -8,7 +8,7 @@ export default class Saito {
 
 
     public static async initialize(configs: any, sharedMethods: SharedMethods) {
-        this.libInstance = new Saito();
+        this.instance = new Saito();
 
         // @ts-ignore
         globalThis.shared_methods = {

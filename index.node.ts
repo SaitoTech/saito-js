@@ -46,3 +46,5 @@ export async function initialize(configs: any, sharedMethods: SharedMethods) {
             return Saito.initialize(configs, sharedMethods);
         });
 }
+
+export default Saito;
