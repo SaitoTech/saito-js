@@ -1,4 +1,5 @@
 import SharedMethods from "./shared_methods";
+import type {WasmTransaction} from 'saito-wasm/dist/types/pkg/node/index_bg';
 
 export default class Saito {
     private static instance: Saito;
@@ -81,5 +82,49 @@ export default class Saito {
         let socket = this.sockets.get(index);
         this.sockets.delete(index);
         socket.close();
+    }
+
+    public async setConfigs(json: any): Promise<void> {
+        return Saito.getLibInstance().set_configs(json);
+    }
+
+    public async initialize(configs: any): Promise<any> {
+        return Saito.getLibInstance().initialize(configs);
+    }
+
+    public async createTransaction(): Promise<WasmTransaction> {
+        return Saito.getLibInstance().create_transaction();
+    }
+
+    public async sendTransaction(transaction: WasmTransaction): Promise<any> {
+        return Saito.getLibInstance().send_transaction(transaction);
+    }
+
+    public getLatestBlockHash(): string {
+        return Saito.getLibInstance().get_latest_block_hash();
+    }
+
+    public getPublicKey(): string {
+        return Saito.getLibInstance().get_public_key();
+    }
+
+    public async processNewPeer(index: bigint, peer_config: any): Promise<void> {
+        return Saito.getLibInstance().process_new_peer(index, peer_config);
+    }
+
+    public async processPeerDisconnection(peer_index: bigint): Promise<void> {
+        return Saito.getLibInstance().process_peer_disconnection(peer_index);
+    }
+
+    public async processMsgBufferFromPeer(buffer: Uint8Array, peer_index: bigint): Promise<void> {
+        return Saito.getLibInstance().process_msg_buffer_from_peer(buffer, peer_index);
+    }
+
+    public async processFetchedBlock(buffer: Uint8Array, hash: Uint8Array, peer_index: bigint): Promise<void> {
+        return Saito.getLibInstance().process_fetched_block(buffer, hash, peer_index);
+    }
+
+    public async processTimerEvent(duration_in_ms: bigint): Promise<void> {
+        return Saito.getLibInstance().process_timer_event(duration_in_ms);
     }
 }
