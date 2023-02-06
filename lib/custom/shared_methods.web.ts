@@ -95,6 +95,7 @@ export default class WebSharedMethods implements SharedMethods {
     sendMessage(peerIndex: bigint, buffer: Uint8Array): void {
         let socket = Saito.getInstance().getSocket(peerIndex);
         socket.send(buffer);
+        
     }
 
     sendMessageToAll(buffer: Uint8Array, exceptions: Array<bigint>): void {

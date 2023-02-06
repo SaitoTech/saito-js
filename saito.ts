@@ -48,11 +48,12 @@ export default class Saito {
             }
         };
 
-        await Saito.getLibInstance().initialize(configs);
+        await Saito.getLibInstance().initialize(JSON.stringify(configs));
         console.log("saito initialized");
 
         setInterval(() => {
             Saito.getLibInstance().process_timer_event(BigInt(100));
+            // console.log(`WASM memory usage is ${wasm.memory.buffer.byteLength} bytes`);
         }, 100);
     }
 
@@ -82,10 +83,6 @@ export default class Saito {
         let socket = this.sockets.get(index);
         this.sockets.delete(index);
         socket.close();
-    }
-
-    public async setConfigs(json: any): Promise<void> {
-        return Saito.getLibInstance().set_configs(json);
     }
 
     public async initialize(configs: any): Promise<any> {

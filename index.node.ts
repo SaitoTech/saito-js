@@ -36,11 +36,15 @@ globalThis.crypto = cr.webcrypto;
  * @param sharedMethods
  */
 export async function initialize(configs: any, sharedMethods: SharedMethods) {
-    let saito = await import("saito-wasm/dist/server/index");
+    if (Saito.getLibInstance()) {
+        console.error("saito already initialized");
+        return;
+    }
+    console.log("initializing saito-js");
+    let saito = await import("saito-wasm/dist/server");
+    console.log("wasm lib loaded");
 
-    // console.log("111  :", saito);
     let s = await saito.default;
-    // console.log("222 : ", s);
 
     Saito.setLibInstance(s);
 
