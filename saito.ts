@@ -10,7 +10,7 @@ export default class Saito {
     private static libInstance: any;
     sockets: Map<bigint, any> = new Map<bigint, any>();
     nextIndex: bigint = BigInt(0);
-    factory: Factory = new SaitoFactory();
+    factory = new SaitoFactory();
 
     public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new SaitoFactory()) {
         this.instance = new Saito(factory);
@@ -99,7 +99,7 @@ export default class Saito {
 
 
     public async sendTransaction(transaction: Transaction): Promise<any> {
-        return Saito.getLibInstance().send_transaction(transaction.getWasmTransaction());
+        return Saito.getLibInstance().send_transaction(transaction.wasmTransaction);
     }
 
     public getLatestBlockHash(): string {
@@ -157,7 +157,7 @@ export default class Saito {
     }
 
     public async signTransaction(tx: Transaction) {
-        await tx.getWasmTransaction().sign();
+        await tx.wasmTransaction.sign();
     }
 
 
@@ -166,7 +166,7 @@ export default class Saito {
     }
 
     public async signAndEncryptTransaction(tx: Transaction) {
-        await tx.getWasmTransaction().sign_and_encrypt();
+        await tx.wasmTransaction.sign_and_encrypt();
     }
 
     public async getBalance(): Promise<bigint> {

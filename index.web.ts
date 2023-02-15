@@ -41,29 +41,16 @@ export async function initialize(configs: any, sharedMethods: SharedMethods) {
 
     return import("saito-wasm/dist/browser")
         .then((s: any) => {
-            // console.log("s : ", s);
-            // console.log("m1 : ", s.memory);
             return s.default;
         })
-        // .then((s) => {
-        //     console.log("s2 : ", s);
-        //     console.log("m2 : ", s.memory);
-        //     return s.default();
-        // })
         .then((s) => {
-            // console.log("s3 : ", s);
-            // console.log("m3 : ", s.memory);
-            // console.log("configs : ", configs);
             Saito.setLibInstance(s);
-
             return s.default()
                 .then(() => {
                     return Saito.initialize(configs, sharedMethods);
-                    // return Saito.getLibInstance().test_run("aaaa");
                 });
-
-            // return Saito.initialize(configs, sharedMethods);
         });
 }
+
 
 export default Saito;

@@ -1,7 +1,7 @@
-import Block from "./block";
-import Transaction from "./transaction";
 import Slip from "./slip";
 import Factory from "./factory";
+import Block from "./block";
+import Transaction from "./transaction";
 
 export default class SaitoFactory implements Factory {
     public createBlock(data: any): Block {

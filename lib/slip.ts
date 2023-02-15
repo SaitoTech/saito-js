@@ -25,7 +25,7 @@ export default class Slip {
         }
     }
 
-    public getWasmSlip(): WasmSlip {
+    public get wasmSlip(): WasmSlip {
         return this.slip;
     }
 
@@ -47,6 +47,10 @@ export default class Slip {
 
     public get publicKey(): string {
         return this.slip.public_key;
+    }
+
+    public set publicKey(key: string) {
+        this.slip.public_key = key;
     }
 
     public set index(index: number) {

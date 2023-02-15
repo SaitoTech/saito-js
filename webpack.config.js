@@ -1,60 +1,15 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-// const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const {merge} = require("webpack-merge");
 
 let config = {
     optimization: {
         minimize: false,
     },
-    // node: {
-    //     fs: "empty",
-    // },
-    // externals: [
-    //     // {
-    //     //     archiver: "archiver"
-    //     // },
-    //     // {
-    //     //     child_process: "child_process"
-    //     // },
-    //     // {
-    //     //     nodemailer: "nodemailer"
-    //     // },
-    //     // {
-    //     //     jimp: "jimp"
-    //     // },
-    //     // {
-    //     //     "image-resolve": "image-resolver"
-    //     // },
-    //     // {
-    //     //     sqlite: "sqlite"
-    //     // },
-    //     // {
-    //     //     unzipper: "unzipper"
-    //     // },
-    //     // {
-    //     //     webpack: "webpack"
-    //     // },
-    //     // /^(image-resolver|\$)$/i,
-    //     /\.txt/,
-    //     /\.png$/,
-    //     /\.jpg$/,
-    //     /\.html$/,
-    //     /\.css$/,
-    //     /\.sql$/,
-    //     /\.md$/,
-    //     /\.pdf$/,
-    //     /\.sh$/,
-    //     /\.zip$/,
-    //     /\/web\//,
-    //     /\/www\//
-    // ],
     // Path to your entry point. From this file Webpack will begin his work
     // entry: ["babel-polyfill", path.resolve(__dirname, entrypoint)],
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        //extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
         extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".wasm", "..."],
         fallback: {
             "fs": false,
@@ -106,49 +61,10 @@ let config = {
                 exclude: /(node_modules)/,
                 type: "javascript/auto"
             },
-            // {
-            //     test: /html$/,
-            //     exclude: [/(mods)/, /(email)/]
-            // },
-            // {
-            //     test: /\.js$/,
-            //     exclude: /(node_modules)/,
-            //     use: {
-            //         loader: 'babel-loader',
-            //         options: {
-            //             presets: ['@babel/preset-env'],
-            //             sourceMaps:true
-            //         }
-            //     }
-            // },
-            // Emscripten JS files define a global. With `exports-loader` we can
-            // load these files correctly (provided the global’s name is the same
-            // as the file name).
-            // {
-            //     test: /quirc\.js$/,
-            //     loader: "exports-loader"
-            // },
-            // wasm files should not be processed but just be emitted and we want
-            // to have their public URL.
-            // {
-            //     test: /quirc\.wasm$/,
-            //     type: "javascript/auto",
-            //     loader: "file-loader",
-            //     options: {
-            //         publicPath: "dist/"
-            //     }
-            // },
             {
                 test: /\.wasm$/,
                 type: "asset/inline",
             },
-            //     {
-            //         test: /\.zip$/,
-            //         exclude: [
-            //             path.resolve(__dirname, "../mods/appstore/bundler"),
-            //             path.resolve(__dirname, "../mods/appstore/mods")
-            //         ]
-            //     }
         ],
         parser: {
             javascript: {
@@ -196,7 +112,6 @@ let nodeConfigs = merge(config, {
 });
 let webConfigs = merge(config, {
     output: {
-        // path: path.resolve(__dirname, "./dist/browser"),
         path: path.resolve(__dirname, "./dist/browser/"),
         filename: "index.js"
     },

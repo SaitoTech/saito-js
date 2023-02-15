@@ -1,6 +1,6 @@
 import Block from "./block";
-import Transaction from "./transaction";
 import Slip from "./slip";
+import Transaction from "./transaction";
 
 
 export default interface Factory {
