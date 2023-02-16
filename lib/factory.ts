@@ -1,12 +1,27 @@
 import Block from "./block";
-import Slip from "./slip";
 import Transaction from "./transaction";
+import Slip from "./slip";
 
+export default class Factory {
+    public createBlock(data: any): Block {
+        return new Block(data);
+    }
 
-export default interface Factory {
-    createBlock(data: any): Block;
+    public createTransaction(data: any): Transaction {
+        return new Transaction(data);
+    }
 
-    createTransaction(data: any): Transaction;
+    public createSlip(data: any): Slip {
+        return new Slip(data);
+    }
+}
 
-    createSlip(data: any): Slip;
+class S extends Slip {
+
+}
+
+class F extends Factory {
+    createSlip(data: any): Slip {
+        return new S(data);
+    }
 }

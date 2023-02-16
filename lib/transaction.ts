@@ -13,8 +13,8 @@ export enum TransactionType {
     Other = 7,
 }
 
-export default class Transaction<Sl extends Slip = Slip> {
-    private tx: WasmTransaction;
+export default class Transaction {
+    protected tx: WasmTransaction;
 
     // TODO : factory pattern might be useful here to remove unnecessary wrappings
     constructor(tx: WasmTransaction) {
@@ -25,25 +25,25 @@ export default class Transaction<Sl extends Slip = Slip> {
         return this.tx;
     }
 
-    public addFromSlip(slip: Sl) {
+    public addFromSlip(slip: Slip) {
         this.tx.add_from_slip(slip.wasmSlip);
     }
 
-    public addToSlip(slip: Sl) {
+    public addToSlip(slip: Slip) {
         this.tx.add_to_slip(slip.wasmSlip);
     }
 
-    public get to(): Array<Sl> {
+    public get to(): Array<Slip> {
         let slips: WasmSlip[] = this.tx.output_slips;
         return slips.map(slip => {
-            return Saito.getInstance().factory.createSlip(slip) as Sl;
+            return Saito.getInstance().factory.createSlip(slip);
         });
     }
 
     public get from(): Array<Slip> {
         let slips: WasmSlip[] = this.tx.input_slips;
         return slips.map(slip => {
-            return Saito.getInstance().factory.createSlip(slip) as Sl;
+            return Saito.getInstance().factory.createSlip(slip);
         });
     }
 

@@ -15,7 +15,7 @@ export enum SlipType {
 export default class Slip {
     private slip: WasmSlip;
 
-    constructor(slip: WasmSlip | undefined) {
+    public constructor(slip?: WasmSlip) {
 
         if (!slip) {
             // @ts-ignore

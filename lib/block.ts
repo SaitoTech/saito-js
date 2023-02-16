@@ -1,6 +1,5 @@
 import type {WasmBlock} from 'saito-wasm/dist/types/pkg/node/index_bg';
 import Transaction from "./transaction";
-import Slip from "./slip";
 import Saito from "../saito";
 
 export enum BlockType {
@@ -11,17 +10,24 @@ export enum BlockType {
 }
 
 
-export default class Block<Tx extends Transaction<Slip> = Transaction> {
-    private block: WasmBlock;
+export default class Block {
+    protected block: WasmBlock;
 
     constructor(block: WasmBlock) {
         this.block = block;
     }
 
-    public get transactions(): Array<Tx> {
+    public get transactions(): Array<Transaction> {
         return this.block.transactions.map(tx => {
-            return Saito.getInstance().factory.createTransaction(tx) as Tx;
+            return Saito.getInstance().factory.createTransaction(tx);
         });
     }
 
+    public get id(): bigint {
+        return this.block.id;
+    }
+
+    public get hash(): string {
+        return this.block.hash;
+    }
 }

@@ -2,7 +2,6 @@ import SharedMethods from "./shared_methods";
 import Transaction from "./lib/transaction";
 import Block from "./lib/block";
 import Factory from "./lib/factory";
-import SaitoFactory from "./lib/saito_factory";
 import Peer from "./lib/peer";
 
 export default class Saito {
@@ -10,9 +9,9 @@ export default class Saito {
     private static libInstance: any;
     sockets: Map<bigint, any> = new Map<bigint, any>();
     nextIndex: bigint = BigInt(0);
-    factory = new SaitoFactory();
+    factory = new Factory();
 
-    public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new SaitoFactory()) {
+    public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new Factory()) {
         this.instance = new Saito(factory);
 
         // @ts-ignore
@@ -108,7 +107,7 @@ export default class Saito {
 
     public async getBlock(blockHash: string): Promise<Block> {
         let block = await Saito.getLibInstance().get_block(blockHash);
-        return new Block(block);
+        return Saito.getInstance().factory.createBlock(block);
     }
 
     public getPublicKey(): string {
