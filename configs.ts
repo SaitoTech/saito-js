@@ -1,0 +1,25 @@
+type Configs = {
+    server: {
+        host: string,
+        port: number,
+        protocol: string,
+        endpoint: {
+            host: string,
+            port: number,
+            protocol: string,
+        },
+        verification_threads: number,
+        channel_size: number,
+        stat_timer_in_ms: number,
+        thread_sleep_time_in_ms: number,
+        block_fetch_batch_size: number,
+    },
+    peers: {
+        host: string,
+        port: number,
+        protocol: string,
+        synctype: string
+    }[]
+};
+
+export default Configs;

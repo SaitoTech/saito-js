@@ -1,27 +1,22 @@
 import Block from "./block";
 import Transaction from "./transaction";
 import Slip from "./slip";
+import Peer from "./peer";
 
 export default class Factory {
     public createBlock(data: any): Block {
         return new Block(data);
     }
 
-    public createTransaction(data: any): Transaction {
+    public createTransaction<T extends Transaction>(data: any): Transaction {
         return new Transaction(data);
     }
 
     public createSlip(data: any): Slip {
         return new Slip(data);
     }
-}
 
-class S extends Slip {
-
-}
-
-class F extends Factory {
-    createSlip(data: any): Slip {
-        return new S(data);
+    public createPeer(data: any): Peer {
+        return new Peer(data);
     }
 }

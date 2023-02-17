@@ -6,4 +6,8 @@ export default class Peer {
     constructor(peer: WasmPeer) {
         this.peer = peer;
     }
+
+    public get publicKey(): string {
+        return this.peer.public_key;
+    }
 }

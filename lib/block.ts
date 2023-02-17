@@ -30,4 +30,8 @@ export default class Block {
     public get hash(): string {
         return this.block.hash;
     }
+
+    public serialize(): Uint8Array {
+        return this.block.serialize();
+    }
 }
