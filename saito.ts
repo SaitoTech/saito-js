@@ -4,12 +4,33 @@ import Block from "./lib/block";
 import Factory from "./lib/factory";
 import Peer from "./lib/peer";
 
+// export enum MessageType {
+//     HandshakeChallenge = 1,
+//     HandshakeResponse,
+//     //HandshakeCompletion,
+//     ApplicationMessage = 4,
+//     Block,
+//     Transaction,
+//     BlockchainRequest,
+//     BlockHeaderHash,
+//     Ping,
+//     SPVChain,
+//     Services,
+//     GhostChain,
+//     GhostChainRequest,
+//     Result,
+//     Error,
+//     ApplicationTransaction,
+// }
+
 export default class Saito {
     private static instance: Saito;
     private static libInstance: any;
     sockets: Map<bigint, any> = new Map<bigint, any>();
     nextIndex: bigint = BigInt(0);
     factory = new Factory();
+    promises = new Map<number, any>();
+    private callbackIndex: number = 1;
 
     public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new Factory()) {
         this.instance = new Saito(factory);
@@ -48,6 +69,15 @@ export default class Saito {
                 sharedMethods.fetchBlockFromPeer(url).then((buffer: Uint8Array) => {
                     Saito.getLibInstance().process_fetched_block(buffer, hash, peer_index);
                 })
+            },
+            process_api_call: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
+                return sharedMethods.processApiCall(buffer, msgIndex, peerIndex);
+            },
+            process_api_result: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
+                return sharedMethods.processApiResult(buffer, msgIndex, peerIndex);
+            },
+            process_api_error: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
+                return sharedMethods.processApiError(buffer, msgIndex, peerIndex);
             }
         };
 
@@ -94,11 +124,6 @@ export default class Saito {
 
     public async initialize(configs: any): Promise<any> {
         return Saito.getLibInstance().initialize(configs);
-    }
-
-
-    public async sendTransaction(transaction: Transaction): Promise<any> {
-        return Saito.getLibInstance().send_transaction(transaction.wasmTransaction);
     }
 
     public getLatestBlockHash(): string {
@@ -179,4 +204,61 @@ export default class Saito {
             return this.factory.createPeer(peer);
         });
     }
+
+    public generatePrivateKey(): string {
+        return Saito.getLibInstance().generate_private_key();
+    }
+
+    public generatePublicKey(privateKey: string): string {
+        return Saito.getLibInstance().generate_public_key(privateKey);
+    }
+
+    public async propagateTransaction(tx: Transaction) {
+        return Saito.getLibInstance().propagateTransaction(tx.wasmTransaction);
+    }
+
+    public async sendApiCall(buffer: Uint8Array, peerIndex: bigint) {
+        return new Promise((resolve, reject) => {
+            this.promises.set(this.callbackIndex, {
+                resolve,
+                reject
+            });
+            Saito.getLibInstance().send_api_call(buffer, this.callbackIndex, peerIndex)
+                .then(() => {
+                    this.callbackIndex++;
+                });
+        });
+    }
+
+    public async sendApiSuccess(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
+        await Saito.getLibInstance().send_api_success(buffer, msgId, peerIndex);
+        // let socket = this.getSocket(peerIndex);
+        // const data = new ApiMessage(buffer, msgId).serialize();
+        // socket.send(data);
+    }
+
+    public async sendApiError(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
+        await Saito.getLibInstance().send_api_error(buffer, msgId, peerIndex);
+    }
+
+    public async sendTransactionWithCallback(transaction: Transaction, callback?: any, peerIndex?: number): Promise<any> {
+
+        // TODO : stun code goes here probably???
+        if (!peerIndex) {
+            let peers = await this.getPeers();
+            for (let peer of peers) {
+                let peerIndex = peer.peerIndex;
+                let socket = this.getSocket(peerIndex);
+                if (!socket) {
+                    throw new Error("not implemented");
+                }
+                if (socket.readyState === socket.OPEN) {
+//.............
+                }
+                socket.send()
+            }
+        } else {
+        }
+    }
+
 }

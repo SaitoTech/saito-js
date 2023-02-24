@@ -18,4 +18,11 @@ export default interface SharedMethods {
     disconnectFromPeer(peerIndex: bigint): void;
 
     fetchBlockFromPeer(url: string): Promise<Uint8Array>;
+
+    processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
+
+    processApiResult(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
+
+    processApiError(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
+
 }

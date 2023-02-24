@@ -1,7 +1,7 @@
-import SharedMethods from "../../shared_methods";
 import Saito from "../../saito";
+import CustomSharedMethods from "./shared_methods.custom";
 
-export default class WebSharedMethods implements SharedMethods {
+export default class WebSharedMethods extends CustomSharedMethods {
     connectToPeer(peerData: any): void {
         let protocol = "ws";
         if (peerData.protocol === "https") {
@@ -95,7 +95,7 @@ export default class WebSharedMethods implements SharedMethods {
     sendMessage(peerIndex: bigint, buffer: Uint8Array): void {
         let socket = Saito.getInstance().getSocket(peerIndex);
         socket.send(buffer);
-        
+
     }
 
     sendMessageToAll(buffer: Uint8Array, exceptions: Array<bigint>): void {
@@ -114,5 +114,4 @@ export default class WebSharedMethods implements SharedMethods {
             console.error(error);
         }
     }
-
 }
