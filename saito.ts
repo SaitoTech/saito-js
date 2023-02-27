@@ -32,6 +32,8 @@ export default class Saito {
     promises = new Map<number, any>();
     private callbackIndex: number = 1;
 
+    private publicKey: string = "";
+
     public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new Factory()) {
         this.instance = new Saito(factory);
 
@@ -71,7 +73,9 @@ export default class Saito {
                 })
             },
             process_api_call: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
-                return sharedMethods.processApiCall(buffer, msgIndex, peerIndex);
+                return sharedMethods.processApiCall(buffer, msgIndex, peerIndex).then(() => {
+
+                });
             },
             process_api_result: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
                 return sharedMethods.processApiResult(buffer, msgIndex, peerIndex);
@@ -82,6 +86,8 @@ export default class Saito {
         };
 
         await Saito.getLibInstance().initialize(JSON.stringify(configs));
+
+        this.instance.publicKey = await Saito.getLibInstance().get_public_key();
         console.log("saito initialized");
 
         setInterval(() => {
@@ -136,7 +142,7 @@ export default class Saito {
     }
 
     public getPublicKey(): string {
-        return Saito.getLibInstance().get_public_key();
+        return this.publicKey;
     }
 
     public async processNewPeer(index: bigint, peer_config: any): Promise<void> {
@@ -203,6 +209,10 @@ export default class Saito {
         return peers.map((peer: any) => {
             return this.factory.createPeer(peer);
         });
+    }
+
+    public async getPeer(index: bigint): Promise<Peer> {
+        return await Saito.getLibInstance().get_peer(index);
     }
 
     public generatePrivateKey(): string {

@@ -2,7 +2,7 @@ import SharedMethods from "../../shared_methods";
 import Saito from "../../saito";
 
 export default class CustomSharedMethods implements SharedMethods {
-    processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void {
+    processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): Promise<void> {
         throw new Error("Method not implemented.");
     }
 
