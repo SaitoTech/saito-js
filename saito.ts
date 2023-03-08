@@ -32,7 +32,6 @@ export default class Saito {
     promises = new Map<number, any>();
     private callbackIndex: number = 1;
 
-    private publicKey: string = "";
 
     public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new Factory()) {
         this.instance = new Saito(factory);
@@ -87,7 +86,6 @@ export default class Saito {
 
         await Saito.getLibInstance().initialize(JSON.stringify(configs));
 
-        this.instance.publicKey = await Saito.getLibInstance().get_public_key();
         console.log("saito initialized");
 
         setInterval(() => {
@@ -136,13 +134,17 @@ export default class Saito {
         return Saito.getLibInstance().get_latest_block_hash();
     }
 
-    public async getBlock<B extends Block>(blockHash: string): Promise<B> {
-        let block = await Saito.getLibInstance().get_block(blockHash);
+    public getBlock<B extends Block>(blockHash: string): B {
+        let block = Saito.getLibInstance().get_block(blockHash);
         return Saito.getInstance().factory.createBlock(block) as B;
     }
 
     public getPublicKey(): string {
-        return this.publicKey;
+        return Saito.getLibInstance().get_public_key();
+    }
+
+    public getPrivateKey(): string {
+        return Saito.getLibInstance().get_private_key();
     }
 
     public async processNewPeer(index: bigint, peer_config: any): Promise<void> {
@@ -166,6 +168,7 @@ export default class Saito {
     }
 
     public hash(buffer: Uint8Array): string {
+        // console.log("hash -> ", buffer);
         return Saito.getLibInstance().hash(buffer);
     }
 
@@ -177,42 +180,44 @@ export default class Saito {
         return Saito.getLibInstance().verify_signature(buffer, signature, publicKey);
     }
 
-    public async createTransaction<T extends Transaction>(
+    public createTransaction<T extends Transaction>(
         publickey = "",
         amount = BigInt(0),
         fee = BigInt(0),
         force_merge = false
-    ): Promise<T> {
-        let wasmTx = await Saito.getLibInstance().create_transaction(publickey, amount, amount, fee, force_merge);
+    ): T {
+        let wasmTx = Saito.getLibInstance().create_transaction(publickey, amount, amount, fee, force_merge);
         return Saito.getInstance().factory.createTransaction(wasmTx) as T;
     }
 
-    public async signTransaction(tx: Transaction) {
-        await tx.wasmTransaction.sign();
+    public signTransaction(tx: Transaction) {
+        console.warn("sign tx : ", tx);
+        tx.wasmTransaction.sign();
     }
 
 
-    public async getPendingTransactions<Tx extends Transaction>(): Promise<Array<Tx>> {
+    public getPendingTransactions<Tx extends Transaction>(): Array<Tx> {
         return Saito.getLibInstance().get_pending_txs();
     }
 
-    public async signAndEncryptTransaction(tx: Transaction) {
-        await tx.wasmTransaction.sign_and_encrypt();
+    public signAndEncryptTransaction(tx: Transaction) {
+        tx.wasmTransaction.sign_and_encrypt();
     }
 
-    public async getBalance(): Promise<bigint> {
+    public getBalance(): bigint {
         return Saito.getLibInstance().get_balance();
     }
 
-    public async getPeers(): Promise<Array<Peer>> {
-        let peers = await Saito.getLibInstance().get_peers();
+    public getPeers(): Array<Peer> {
+        let peers = Saito.getLibInstance().get_peers();
         return peers.map((peer: any) => {
             return this.factory.createPeer(peer);
         });
     }
 
-    public async getPeer(index: bigint): Promise<Peer> {
-        return await Saito.getLibInstance().get_peer(index);
+
+    public getPeer(index: bigint): Peer {
+        return Saito.getLibInstance().get_peer(index);
     }
 
     public generatePrivateKey(): string {
@@ -224,7 +229,7 @@ export default class Saito {
     }
 
     public async propagateTransaction(tx: Transaction) {
-        return Saito.getLibInstance().propagateTransaction(tx.wasmTransaction);
+        return Saito.getLibInstance().propagate_transaction(tx.wasmTransaction);
     }
 
     public async sendApiCall(buffer: Uint8Array, peerIndex: bigint) {

@@ -91,7 +91,7 @@ export default class Transaction {
         return this.tx.total_fees;
     }
 
-    public async sign() {
-        await Saito.getInstance().signTransaction(this);
+    public sign() {
+        Saito.getInstance().signTransaction(this);
     }
 }
