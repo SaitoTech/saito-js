@@ -12,9 +12,14 @@ export enum BlockType {
 
 export default class Block {
     protected block: WasmBlock;
+    public static Type: any;
 
-    constructor(block: WasmBlock) {
-        this.block = block;
+    constructor(block?: WasmBlock) {
+        if (block) {
+            this.block = block;
+        } else {
+            this.block = Block.Type();
+        }
     }
 
     public get transactions(): Array<Transaction> {

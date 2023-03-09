@@ -14,12 +14,11 @@ export enum SlipType {
 
 export default class Slip {
     private slip: WasmSlip;
+    public static Type: any;
 
     public constructor(slip?: WasmSlip) {
-
         if (!slip) {
-            // @ts-ignore
-            this.slip = new WasmSlip();
+            this.slip = new Slip.Type();
         } else {
             this.slip = slip;
         }

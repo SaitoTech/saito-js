@@ -186,13 +186,14 @@ export default class Saito {
         fee = BigInt(0),
         force_merge = false
     ): T {
-        let wasmTx = Saito.getLibInstance().create_transaction(publickey, amount, amount, fee, force_merge);
+        let wasmTx = Saito.getLibInstance().create_transaction(publickey, amount, fee, force_merge);
         return Saito.getInstance().factory.createTransaction(wasmTx) as T;
     }
 
-    public signTransaction(tx: Transaction) {
+    public signTransaction(tx: Transaction): Transaction {
         console.warn("sign tx : ", tx);
         tx.wasmTransaction.sign();
+        return tx;
     }
 
 

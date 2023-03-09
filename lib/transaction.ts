@@ -15,10 +15,15 @@ export enum TransactionType {
 
 export default class Transaction {
     protected tx: WasmTransaction;
+    public static Type: any;
 
     // TODO : factory pattern might be useful here to remove unnecessary wrappings
-    constructor(tx: WasmTransaction) {
-        this.tx = tx;
+    constructor(tx?: WasmTransaction) {
+        if (tx) {
+            this.tx = tx;
+        } else {
+            this.tx = new Transaction.Type();
+        }
     }
 
     public get wasmTransaction(): WasmTransaction {
@@ -34,14 +39,14 @@ export default class Transaction {
     }
 
     public get to(): Array<Slip> {
-        let slips: WasmSlip[] = this.tx.output_slips;
+        let slips: WasmSlip[] = this.tx.to;
         return slips.map(slip => {
             return Saito.getInstance().factory.createSlip(slip);
         });
     }
 
     public get from(): Array<Slip> {
-        let slips: WasmSlip[] = this.tx.input_slips;
+        let slips: WasmSlip[] = this.tx.from;
         return slips.map(slip => {
             return Saito.getInstance().factory.createSlip(slip);
         });
