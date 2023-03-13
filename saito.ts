@@ -191,7 +191,6 @@ export default class Saito {
     }
 
     public signTransaction(tx: Transaction): Transaction {
-        console.warn("sign tx : ", tx);
         tx.wasmTransaction.sign();
         return tx;
     }

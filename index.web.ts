@@ -5,13 +5,14 @@ import Transaction from "./lib/transaction";
 import Slip from "./lib/slip";
 import Block from "./lib/block";
 import Peer from "./lib/peer";
+import Factory from "./lib/factory";
 
 /**
  *
  * @param configs
  * @param sharedMethods
  */
-export async function initialize(configs: Configs, sharedMethods: SharedMethods) {
+export async function initialize(configs: Configs, sharedMethods: SharedMethods, factory: Factory) {
     if (Saito.getLibInstance()) {
         console.error("saito already initialized");
         return;
@@ -26,14 +27,12 @@ export async function initialize(configs: Configs, sharedMethods: SharedMethods)
             Saito.setLibInstance(s);
             return s.default()
                 .then(() => {
-                    console.log("Saito = ", Saito);
-                    console.log("s = ", s);
-                    console.log("WasmTransaction", s.WasmTransaction);
+
                     Transaction.Type = s.WasmTransaction;
                     Slip.Type = s.WasmSlip;
                     Block.Type = s.WasmBlock;
                     Peer.Type = s.WasmPeer;
-                    return Saito.initialize(configs, sharedMethods);
+                    return Saito.initialize(configs, sharedMethods, factory);
                 });
         });
 }

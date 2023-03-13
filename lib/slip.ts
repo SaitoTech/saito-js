@@ -16,11 +16,20 @@ export default class Slip {
     private slip: WasmSlip;
     public static Type: any;
 
-    public constructor(slip?: WasmSlip) {
+    public constructor(slip?: WasmSlip, json?: any) {
         if (!slip) {
             this.slip = new Slip.Type();
         } else {
             this.slip = slip;
+        }
+        if (json) {
+            this.publicKey = json.publicKey;
+            this.type = json.type;
+            this.amount = json.amount;
+            this.index = json.index;
+            this.blockId = json.blockId;
+            this.txOrdinal = json.txOrdinal;
+            this.utxoKey = json.utxoKey;
         }
     }
 
@@ -82,5 +91,29 @@ export default class Slip {
 
     public get utxoKey(): string {
         return this.slip.utxo_key;
+    }
+
+    public toJson(): {
+        blockId: bigint;
+        utxoKey: string;
+        amount: bigint;
+        index: number;
+        publicKey: string;
+        txOrdinal: bigint;
+        type: any;
+    } {
+        return {
+            publicKey: this.publicKey,
+            type: this.type,
+            amount: this.amount,
+            index: this.index,
+            blockId: this.blockId,
+            txOrdinal: this.txOrdinal,
+            utxoKey: this.utxoKey,
+        };
+    }
+
+    public clone() {
+        return new Slip(undefined, this.toJson());
     }
 }

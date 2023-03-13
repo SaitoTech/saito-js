@@ -1,4 +1,4 @@
-import type {WasmSlip, WasmTransaction} from 'saito-wasm/dist/types/pkg/node/index_bg';
+import type {WasmTransaction} from 'saito-wasm/dist/types/pkg/node/index_bg';
 import Slip from "./slip";
 import Saito from "../saito";
 
@@ -18,11 +18,26 @@ export default class Transaction {
     public static Type: any;
 
     // TODO : factory pattern might be useful here to remove unnecessary wrappings
-    constructor(tx?: WasmTransaction) {
+    constructor(tx?: WasmTransaction, json?: any) {
         if (tx) {
             this.tx = tx;
         } else {
             this.tx = new Transaction.Type();
+        }
+        if (json) {
+            for (let slip of json.to) {
+                let s = new Slip(undefined, slip);
+                this.addToSlip(s);
+            }
+            for (let slip of json.from) {
+                let s = new Slip(undefined, slip);
+                this.addFromSlip(s);
+            }
+            this.timestamp = json.timestamp;
+            this.type = json.type;
+            this.signature = json.signature;
+            this.data = new Uint8Array(json.data);
+            this.txs_replacements = json.txs_replacements;
         }
     }
 
@@ -39,15 +54,13 @@ export default class Transaction {
     }
 
     public get to(): Array<Slip> {
-        let slips: WasmSlip[] = this.tx.to;
-        return slips.map(slip => {
+        return this.tx.to.map(slip => {
             return Saito.getInstance().factory.createSlip(slip);
         });
     }
 
     public get from(): Array<Slip> {
-        let slips: WasmSlip[] = this.tx.from;
-        return slips.map(slip => {
+        return this.tx.from.map(slip => {
             return Saito.getInstance().factory.createSlip(slip);
         });
     }
@@ -60,11 +73,11 @@ export default class Transaction {
         this.tx.type = type as number;
     }
 
-    public get timestamp(): bigint {
+    public get timestamp(): number {
         return this.tx.timestamp;
     }
 
-    public set timestamp(timestamp: bigint) {
+    public set timestamp(timestamp: number) {
         this.tx.timestamp = timestamp;
     }
 
@@ -98,5 +111,18 @@ export default class Transaction {
 
     public sign() {
         Saito.getInstance().signTransaction(this);
+    }
+
+    public toJson() {
+        return {
+            to: this.to.map((slip) => slip.toJson()),
+            from: this.from.map((slip) => slip.toJson()),
+            type: this.type,
+            timestamp: this.timestamp,
+            signature: this.signature,
+            data: new Uint8Array(this.data),
+            txs_replacements: this.txs_replacements,
+            total_fees: this.total_fees,
+        };
     }
 }
