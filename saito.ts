@@ -76,8 +76,8 @@ export default class Saito {
 
                 });
             },
-            process_api_result: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
-                return sharedMethods.processApiResult(buffer, msgIndex, peerIndex);
+            process_api_success: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
+                return sharedMethods.processApiSuccess(buffer, msgIndex, peerIndex);
             },
             process_api_error: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
                 return sharedMethods.processApiError(buffer, msgIndex, peerIndex);
@@ -232,7 +232,7 @@ export default class Saito {
         return Saito.getLibInstance().propagate_transaction(tx.wasmTransaction);
     }
 
-    public async sendApiCall(buffer: Uint8Array, peerIndex: bigint) {
+    public async sendApiCall(buffer: Uint8Array, peerIndex: bigint): Promise<Uint8Array> {
         return new Promise((resolve, reject) => {
             this.promises.set(this.callbackIndex, {
                 resolve,
@@ -256,24 +256,35 @@ export default class Saito {
         await Saito.getLibInstance().send_api_error(buffer, msgId, peerIndex);
     }
 
-    public async sendTransactionWithCallback(transaction: Transaction, callback?: any, peerIndex?: number): Promise<any> {
-
+    public async sendTransactionWithCallback(transaction: Transaction, callback?: any, peerIndex?: bigint): Promise<any> {
+        // TODO : implement retry on fail
         // TODO : stun code goes here probably???
-        if (!peerIndex) {
-            let peers = await this.getPeers();
-            for (let peer of peers) {
-                let peerIndex = peer.peerIndex;
-                let socket = this.getSocket(peerIndex);
-                if (!socket) {
-                    throw new Error("not implemented");
+
+        let buffer = transaction.wasmTransaction.serialize();
+        await this.sendApiCall(buffer, peerIndex || BigInt(0))
+            .then((buffer: Uint8Array) => {
+                if (callback) {
+                    let tx = Transaction.deserialize(buffer, this.factory);
+                    callback(tx.data);
                 }
-                if (socket.readyState === socket.OPEN) {
-//.............
+            })
+            .catch((error) => {
+                console.error(error);
+                if (callback) {
+                    callback({err: error.toString()});
                 }
-                socket.send()
-            }
-        } else {
-        }
+            });
     }
 
+
+    public async sendRequest(message: string, data: any = "", callback?: any, peerIndex?: bigint): Promise<any> {
+        let publicKey = this.getPublicKey();
+        let tx = this.createTransaction(publicKey, BigInt(0), BigInt(0));
+        tx.msg = {
+            request: message,
+            data: data,
+        };
+        tx.packData();
+        return this.sendTransactionWithCallback(tx, callback, peerIndex);
+    }
 }

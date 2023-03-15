@@ -8,15 +8,15 @@ export default class Factory {
         return new Block(data);
     }
 
-    public createTransaction<T extends Transaction>(data: any): Transaction {
+    public createTransaction<T extends Transaction>(data?: any): Transaction {
         return new Transaction(data);
     }
 
-    public createSlip(data: any): Slip {
+    public createSlip(data?: any): Slip {
         return new Slip(data);
     }
 
-    public createPeer(data: any): Peer {
+    public createPeer(data?: any): Peer {
         return new Peer(data);
     }
 }

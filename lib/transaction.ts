@@ -1,6 +1,7 @@
 import type {WasmTransaction} from 'saito-wasm/dist/types/pkg/node/index_bg';
 import Slip from "./slip";
 import Saito from "../saito";
+import Factory from "./factory";
 
 export enum TransactionType {
     Normal = 0,
@@ -16,6 +17,7 @@ export enum TransactionType {
 export default class Transaction {
     protected tx: WasmTransaction;
     public static Type: any;
+    msg: any;
 
     // TODO : factory pattern might be useful here to remove unnecessary wrappings
     constructor(tx?: WasmTransaction, json?: any) {
@@ -124,5 +126,31 @@ export default class Transaction {
             txs_replacements: this.txs_replacements,
             total_fees: this.total_fees,
         };
+    }
+
+    public static deserialize(buffer: Uint8Array, factory: Factory): Transaction {
+        let wasmTx = Transaction.Type.deserialize(buffer);
+        return factory.createTransaction(wasmTx);
+    }
+
+    public packData() {
+        if (Object.keys(this.msg).length === 0) {
+            this.data = Buffer.alloc(0);
+        } else {
+            this.data = Buffer.from(JSON.stringify(this.msg), "utf-8");
+        }
+    }
+
+    public unpackData() {
+        if (this.data.byteLength === 0) {
+            this.msg = undefined;
+        } else {
+            this.msg = {};
+            try {
+                this.msg = JSON.parse(new Buffer(this.data).toString("utf-8"));
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 }

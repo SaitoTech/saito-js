@@ -36,7 +36,7 @@ export default class CustomSharedMethods implements SharedMethods {
         }
     }
 
-    processApiResult(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void {
+    processApiSuccess(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void {
         let promise = Saito.getInstance().promises.get(msgIndex);
         if (promise) {
             promise.resolve(buffer);

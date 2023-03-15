@@ -21,7 +21,7 @@ export default interface SharedMethods {
 
     processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): Promise<void>;
 
-    processApiResult(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
+    processApiSuccess(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
 
     processApiError(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
 
