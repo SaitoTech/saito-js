@@ -130,20 +130,20 @@ export default class Saito {
         return Saito.getLibInstance().initialize(configs);
     }
 
-    public getLatestBlockHash(): string {
+    public async getLatestBlockHash(): Promise<string> {
         return Saito.getLibInstance().get_latest_block_hash();
     }
 
-    public getBlock<B extends Block>(blockHash: string): B {
-        let block = Saito.getLibInstance().get_block(blockHash);
+    public async getBlock<B extends Block>(blockHash: string): Promise<B> {
+        let block = await Saito.getLibInstance().get_block(blockHash);
         return Saito.getInstance().factory.createBlock(block) as B;
     }
 
-    public getPublicKey(): string {
+    public async getPublicKey(): Promise<string> {
         return Saito.getLibInstance().get_public_key();
     }
 
-    public getPrivateKey(): string {
+    public async getPrivateKey(): Promise<string> {
         return Saito.getLibInstance().get_private_key();
     }
 
@@ -168,7 +168,6 @@ export default class Saito {
     }
 
     public hash(buffer: Uint8Array): string {
-        // console.log("hash -> ", buffer);
         return Saito.getLibInstance().hash(buffer);
     }
 
@@ -180,13 +179,13 @@ export default class Saito {
         return Saito.getLibInstance().verify_signature(buffer, signature, publicKey);
     }
 
-    public createTransaction<T extends Transaction>(
+    public async createTransaction<T extends Transaction>(
         publickey = "",
         amount = BigInt(0),
         fee = BigInt(0),
         force_merge = false
-    ): T {
-        let wasmTx = Saito.getLibInstance().create_transaction(publickey, amount, fee, force_merge);
+    ): Promise<T> {
+        let wasmTx = await Saito.getLibInstance().create_transaction(publickey, amount, fee, force_merge);
         return Saito.getInstance().factory.createTransaction(wasmTx) as T;
     }
 
@@ -195,8 +194,7 @@ export default class Saito {
         return tx;
     }
 
-
-    public getPendingTransactions<Tx extends Transaction>(): Array<Tx> {
+    public async getPendingTransactions<Tx extends Transaction>(): Promise<Array<Tx>> {
         return Saito.getLibInstance().get_pending_txs();
     }
 
@@ -204,19 +202,19 @@ export default class Saito {
         tx.wasmTransaction.sign_and_encrypt();
     }
 
-    public getBalance(): bigint {
+    public async getBalance(): Promise<bigint> {
         return Saito.getLibInstance().get_balance();
     }
 
-    public getPeers(): Array<Peer> {
-        let peers = Saito.getLibInstance().get_peers();
+    public async getPeers(): Promise<Array<Peer>> {
+        let peers = await Saito.getLibInstance().get_peers();
         return peers.map((peer: any) => {
             return this.factory.createPeer(peer);
         });
     }
 
 
-    public getPeer(index: bigint): Peer {
+    public async getPeer(index: bigint): Promise<Peer> {
         return Saito.getLibInstance().get_peer(index);
     }
 
@@ -278,8 +276,8 @@ export default class Saito {
 
 
     public async sendRequest(message: string, data: any = "", callback?: any, peerIndex?: bigint): Promise<any> {
-        let publicKey = this.getPublicKey();
-        let tx = this.createTransaction(publicKey, BigInt(0), BigInt(0));
+        let publicKey = await this.getPublicKey();
+        let tx = await this.createTransaction(publicKey, BigInt(0), BigInt(0));
         tx.msg = {
             request: message,
             data: data,
