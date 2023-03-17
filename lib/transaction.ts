@@ -17,7 +17,7 @@ export enum TransactionType {
 export default class Transaction {
     protected tx: WasmTransaction;
     public static Type: any;
-    msg: any;
+    public msg: any;
 
     // TODO : factory pattern might be useful here to remove unnecessary wrappings
     constructor(tx?: WasmTransaction, json?: any) {
@@ -116,6 +116,7 @@ export default class Transaction {
     }
 
     public toJson() {
+        this.packData();
         return {
             to: this.to.map((slip) => slip.toJson()),
             from: this.from.map((slip) => slip.toJson()),
