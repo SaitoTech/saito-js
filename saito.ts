@@ -263,13 +263,13 @@ export default class Saito {
             .then((buffer: Uint8Array) => {
                 if (callback) {
                     let tx = Transaction.deserialize(buffer, this.factory);
-                    callback(tx.data);
+                    return callback(tx.data);
                 }
             })
             .catch((error) => {
                 console.error(error);
                 if (callback) {
-                    callback({err: error.toString()});
+                    return callback({err: error.toString()});
                 }
             });
     }
