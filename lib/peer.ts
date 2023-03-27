@@ -4,17 +4,21 @@ export default class Peer {
     private peer: WasmPeer;
     public static Type: any;
 
-    constructor(peer?: WasmPeer) {
+    constructor(peer?: WasmPeer, peerIndex?: bigint) {
         if (peer) {
             this.peer = peer;
         } else {
-            this.peer = new Peer.Type();
+            this.peer = new Peer.Type(peerIndex);
         }
     }
 
     public get publicKey(): string {
         return this.peer.public_key;
     }
+
+    // public set publicKey(key: string) {
+    //     this.peer.public_key = key;
+    // }
 
     public get keyList(): Array<string> {
         return this.peer.key_list;

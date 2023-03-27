@@ -189,8 +189,8 @@ export default class Saito {
         return Saito.getInstance().factory.createTransaction(wasmTx) as T;
     }
 
-    public signTransaction(tx: Transaction): Transaction {
-        tx.wasmTransaction.sign();
+    public async signTransaction(tx: Transaction): Promise<Transaction> {
+        await tx.wasmTransaction.sign();
         return tx;
     }
 
@@ -198,8 +198,8 @@ export default class Saito {
         return Saito.getLibInstance().get_pending_txs();
     }
 
-    public signAndEncryptTransaction(tx: Transaction) {
-        tx.wasmTransaction.sign_and_encrypt();
+    public async signAndEncryptTransaction(tx: Transaction) {
+        return tx.wasmTransaction.sign_and_encrypt();
     }
 
     public async getBalance(): Promise<bigint> {
@@ -231,6 +231,7 @@ export default class Saito {
     }
 
     public async sendApiCall(buffer: Uint8Array, peerIndex: bigint): Promise<Uint8Array> {
+        console.log("saito.sendApiCall : peer = " + peerIndex);
         return new Promise((resolve, reject) => {
             this.promises.set(this.callbackIndex, {
                 resolve,
@@ -257,12 +258,14 @@ export default class Saito {
     public async sendTransactionWithCallback(transaction: Transaction, callback?: any, peerIndex?: bigint): Promise<any> {
         // TODO : implement retry on fail
         // TODO : stun code goes here probably???
-
+        console.log("saito.sendTransactionWithCallback : peer = " + peerIndex + " sig = " + transaction.signature);
         let buffer = transaction.wasmTransaction.serialize();
+        console.log("sendTransactionWithCallback : " + peerIndex + " with length : " + buffer.byteLength + " sent : ", transaction.msg);
         await this.sendApiCall(buffer, peerIndex || BigInt(0))
             .then((buffer: Uint8Array) => {
                 if (callback) {
                     let tx = Transaction.deserialize(buffer, this.factory);
+                    console.log("sendTransactionWithCallback received : ", tx);
                     return callback(tx.data);
                 }
             })
@@ -276,6 +279,7 @@ export default class Saito {
 
 
     public async sendRequest(message: string, data: any = "", callback?: any, peerIndex?: bigint): Promise<any> {
+        console.log("saito.sendRequest : peer = " + peerIndex);
         let publicKey = await this.getPublicKey();
         let tx = await this.createTransaction(publicKey, BigInt(0), BigInt(0));
         tx.msg = {

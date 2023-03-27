@@ -17,7 +17,7 @@ export enum TransactionType {
 export default class Transaction {
     protected tx: WasmTransaction;
     public static Type: any;
-    public msg: any;
+    public msg: any = {};
 
     // TODO : factory pattern might be useful here to remove unnecessary wrappings
     constructor(tx?: WasmTransaction, json?: any) {
@@ -115,6 +115,14 @@ export default class Transaction {
         Saito.getInstance().signTransaction(this);
     }
 
+    public isFrom(key: string): boolean {
+        return this.tx.is_from(key);
+    }
+
+    public isTo(key: string): boolean {
+        return this.tx.is_to(key);
+    }
+
     public toJson() {
         this.packData();
         return {
@@ -144,13 +152,14 @@ export default class Transaction {
 
     public unpackData() {
         if (this.data.byteLength === 0) {
-            this.msg = undefined;
-        } else {
             this.msg = {};
+        } else {
             try {
-                this.msg = JSON.parse(new Buffer(this.data).toString("utf-8"));
+                this.msg = JSON.parse(Buffer.from(this.data).toString("utf-8"));
             } catch (error) {
+                console.log("failed parsing tx buffer into msg");
                 console.error(error);
+                this.msg = {};
             }
         }
     }

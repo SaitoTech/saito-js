@@ -4,7 +4,10 @@ import Slip from "./slip";
 import Peer from "./peer";
 
 export default class Factory {
-    public createBlock(data: any): Block {
+    constructor() {
+    }
+
+    public createBlock(data?: any): Block {
         return new Block(data);
     }
 
