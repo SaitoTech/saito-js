@@ -1,7 +1,7 @@
 import type {WasmPeer} from "saito-wasm/dist/types/pkg/node/index_bg";
 
 export default class Peer {
-    private peer: WasmPeer;
+    protected peer: WasmPeer;
     public static Type: any;
 
     constructor(peer?: WasmPeer, peerIndex?: bigint) {

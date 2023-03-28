@@ -215,7 +215,8 @@ export default class Saito {
 
 
     public async getPeer(index: bigint): Promise<Peer> {
-        return Saito.getLibInstance().get_peer(index);
+        let peer = await Saito.getLibInstance().get_peer(index);
+        return this.factory.createPeer(peer);
     }
 
     public generatePrivateKey(): string {
