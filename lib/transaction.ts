@@ -38,7 +38,7 @@ export default class Transaction {
             this.timestamp = json.timestamp;
             this.type = json.type;
             this.signature = json.signature;
-            this.data = new Uint8Array(json.data);
+            this.data = new Uint8Array(Buffer.from(json.buffer, "base64"));
             this.txs_replacements = json.txs_replacements;
         }
     }
@@ -131,7 +131,7 @@ export default class Transaction {
             type: this.type,
             timestamp: this.timestamp,
             signature: this.signature,
-            data: new Uint8Array(this.data),
+            buffer: Buffer.from(this.data).toString("base64"),
             txs_replacements: this.txs_replacements,
             total_fees: this.total_fees,
         };
@@ -144,9 +144,9 @@ export default class Transaction {
 
     public packData() {
         if (Object.keys(this.msg).length === 0) {
-            this.data = Buffer.alloc(0);
+            this.data = new Uint8Array(Buffer.alloc(0));
         } else {
-            this.data = Buffer.from(JSON.stringify(this.msg), "utf-8");
+            this.data = new Uint8Array(Buffer.from(JSON.stringify(this.msg), "utf-8"));
         }
     }
 
