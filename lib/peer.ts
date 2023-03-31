@@ -27,4 +27,20 @@ export default class Peer {
     public get peerIndex(): bigint {
         return this.peer.peer_index;
     }
+
+    public get synctype(): string {
+        return this.peer.sync_type;
+    }
+
+    public get services(): string[] {
+        return this.peer.services;
+    }
+
+    public set services(s: string[]) {
+        this.peer.services = s;
+    }
+
+    public hasService(service: string): boolean {
+        return this.peer.has_service(service);
+    }
 }

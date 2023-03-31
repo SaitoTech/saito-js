@@ -231,18 +231,21 @@ export default class Saito {
         return Saito.getLibInstance().propagate_transaction(tx.wasmTransaction);
     }
 
-    public async sendApiCall(buffer: Uint8Array, peerIndex: bigint): Promise<Uint8Array> {
+    public async sendApiCall(buffer: Uint8Array, peerIndex: bigint, waitForReply: boolean): Promise<Uint8Array> {
         console.log("saito.sendApiCall : peer = " + peerIndex);
-        return new Promise((resolve, reject) => {
-            this.promises.set(this.callbackIndex, {
-                resolve,
-                reject
-            });
-            Saito.getLibInstance().send_api_call(buffer, this.callbackIndex, peerIndex)
-                .then(() => {
-                    this.callbackIndex++;
+        let callbackIndex = this.callbackIndex++;
+        if (waitForReply) {
+
+            return new Promise((resolve, reject) => {
+                this.promises.set(callbackIndex, {
+                    resolve,
+                    reject
                 });
-        });
+                Saito.getLibInstance().send_api_call(buffer, callbackIndex, peerIndex);
+            });
+        } else {
+            return Saito.getLibInstance().send_api_call(buffer, callbackIndex, peerIndex);
+        }
     }
 
     public async sendApiSuccess(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
@@ -262,7 +265,7 @@ export default class Saito {
         console.log("saito.sendTransactionWithCallback : peer = " + peerIndex + " sig = " + transaction.signature);
         let buffer = transaction.wasmTransaction.serialize();
         console.log("sendTransactionWithCallback : " + peerIndex + " with length : " + buffer.byteLength + " sent : ", transaction.msg);
-        await this.sendApiCall(buffer, peerIndex || BigInt(0))
+        await this.sendApiCall(buffer, peerIndex || BigInt(0), !!callback)
             .then((buffer: Uint8Array) => {
                 if (callback) {
                     let tx = Transaction.deserialize(buffer, this.factory);
@@ -278,6 +281,9 @@ export default class Saito {
             });
     }
 
+    public async propagateServices(peerIndex: bigint, services: string[]) {
+        return Saito.getLibInstance().propagateServices(peerIndex, services);
+    }
 
     public async sendRequest(message: string, data: any = "", callback?: any, peerIndex?: bigint): Promise<any> {
         console.log("saito.sendRequest : peer = " + peerIndex);
