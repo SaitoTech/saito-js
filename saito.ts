@@ -190,12 +190,14 @@ export default class Saito {
     }
 
     public async signTransaction(tx: Transaction): Promise<Transaction> {
+        tx.packData();
         await tx.wasmTransaction.sign();
         return tx;
     }
 
     public async getPendingTransactions<Tx extends Transaction>(): Promise<Array<Tx>> {
-        return Saito.getLibInstance().get_pending_txs();
+        let txs = await Saito.getLibInstance().get_pending_txs();
+        return txs.map((tx: any) => Saito.getInstance().factory.createTransaction(tx));
     }
 
     public async signAndEncryptTransaction(tx: Transaction) {
