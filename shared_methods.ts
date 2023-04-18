@@ -25,4 +25,6 @@ export default interface SharedMethods {
 
     processApiError(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): void;
 
+    sendInterfaceEvent(event: String, peerIndex: bigint): void;
+
 }

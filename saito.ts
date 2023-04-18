@@ -81,6 +81,9 @@ export default class Saito {
             },
             process_api_error: (buffer: Uint8Array, msgIndex: number, peerIndex: bigint) => {
                 return sharedMethods.processApiError(buffer, msgIndex, peerIndex);
+            },
+            send_interface_event: (event: string, peerIndex: bigint) => {
+                return sharedMethods.sendInterfaceEvent(event, peerIndex);
             }
         };
 
