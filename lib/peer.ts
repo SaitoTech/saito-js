@@ -43,4 +43,8 @@ export default class Peer {
     public hasService(service: string): boolean {
         return this.peer.has_service(service);
     }
+
+    public isMainPeer(): boolean {
+        return this.peer.is_main_peer();
+    }
 }

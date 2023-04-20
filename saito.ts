@@ -189,7 +189,9 @@ export default class Saito {
         force_merge = false
     ): Promise<T> {
         let wasmTx = await Saito.getLibInstance().create_transaction(publickey, amount, fee, force_merge);
-        return Saito.getInstance().factory.createTransaction(wasmTx) as T;
+        let tx = Saito.getInstance().factory.createTransaction(wasmTx) as T;
+        tx.timestamp = new Date().getTime();
+        return tx;
     }
 
     public async signTransaction(tx: Transaction): Promise<Transaction> {
@@ -219,8 +221,11 @@ export default class Saito {
     }
 
 
-    public async getPeer(index: bigint): Promise<Peer> {
+    public async getPeer(index: bigint): Promise<Peer | null> {
         let peer = await Saito.getLibInstance().get_peer(index);
+        if (!peer) {
+            return null;
+        }
         return this.factory.createPeer(peer);
     }
 
@@ -237,10 +242,9 @@ export default class Saito {
     }
 
     public async sendApiCall(buffer: Uint8Array, peerIndex: bigint, waitForReply: boolean): Promise<Uint8Array> {
-        console.log("saito.sendApiCall : peer = " + peerIndex);
+        console.log("saito.sendApiCall : peer = " + peerIndex + " wait for reply = " + waitForReply);
         let callbackIndex = this.callbackIndex++;
         if (waitForReply) {
-
             return new Promise((resolve, reject) => {
                 this.promises.set(callbackIndex, {
                     resolve,
@@ -255,9 +259,6 @@ export default class Saito {
 
     public async sendApiSuccess(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
         await Saito.getLibInstance().send_api_success(buffer, msgId, peerIndex);
-        // let socket = this.getSocket(peerIndex);
-        // const data = new ApiMessage(buffer, msgId).serialize();
-        // socket.send(data);
     }
 
     public async sendApiError(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
@@ -273,9 +274,15 @@ export default class Saito {
         await this.sendApiCall(buffer, peerIndex || BigInt(0), !!callback)
             .then((buffer: Uint8Array) => {
                 if (callback) {
+                    console.log("deserializing tx. buffer length = " + buffer.byteLength);
                     let tx = Transaction.deserialize(buffer, this.factory);
-                    console.log("sendTransactionWithCallback received : ", tx);
-                    return callback(tx.data);
+                    if (tx) {
+                        console.log("sendTransactionWithCallback received : ", tx);
+                        return callback(tx.data);
+                    } else {
+                        console.log("sendTransactionWithCallback sending direct buffer since tx deserialization failed");
+                        return callback(buffer);
+                    }
                 }
             })
             .catch((error) => {
@@ -302,3 +309,4 @@ export default class Saito {
         return this.sendTransactionWithCallback(tx, callback, peerIndex);
     }
 }
+

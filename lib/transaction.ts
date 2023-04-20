@@ -137,9 +137,16 @@ export default class Transaction {
         };
     }
 
-    public static deserialize(buffer: Uint8Array, factory: Factory): Transaction {
-        let wasmTx = Transaction.Type.deserialize(buffer);
-        return factory.createTransaction(wasmTx);
+    public static deserialize(buffer: Uint8Array, factory: Factory): Transaction | null {
+        console.log("1111");
+        try {
+            let wasmTx = Transaction.Type.deserialize(buffer);
+            console.log("2222");
+            return factory.createTransaction(wasmTx);
+        } catch (e) {
+            console.debug(e);
+            return null;
+        }
     }
 
     public packData() {

@@ -11,6 +11,7 @@ type Configs = {
         verification_threads: number,
         channel_size: number,
         stat_timer_in_ms: number,
+        reconnection_wait_time: number,
         thread_sleep_time_in_ms: number,
         block_fetch_batch_size: number,
     },
