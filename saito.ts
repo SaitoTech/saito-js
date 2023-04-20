@@ -275,15 +275,20 @@ export default class Saito {
         await this.sendApiCall(buffer, peerIndex || BigInt(0), !!callback)
             .then((buffer: Uint8Array) => {
                 if (callback) {
-                    console.log("deserializing tx. buffer length = " + buffer.byteLength);
-                    let tx = Transaction.deserialize(buffer, this.factory);
-                    if (tx) {
-                        console.log("sendTransactionWithCallback received : ", tx);
-                        return callback(tx.data);
-                    } else {
-                        console.log("sendTransactionWithCallback sending direct buffer since tx deserialization failed");
-                        return callback(buffer);
-                    }
+                    // console.log("deserializing tx. buffer length = " + buffer.byteLength);
+                    console.log("sendTransactionWithCallback. buffer length = " + buffer.byteLength);
+
+                    let tx = this.factory.createTransaction();
+                    tx.data = buffer;
+                    tx.unpackData();
+                    // let tx = Transaction.deserialize(buffer, this.factory);
+                    // if (tx) {
+                    //     console.log("sendTransactionWithCallback received : ", tx);
+                    //     return callback(tx.data);
+                    // } else {
+                    //     console.log("sendTransactionWithCallback sending direct buffer since tx deserialization failed");
+                    return callback(tx);
+                    // }
                 }
             })
             .catch((error) => {
@@ -307,7 +312,11 @@ export default class Saito {
             data: data,
         };
         tx.packData();
-        return this.sendTransactionWithCallback(tx, callback, peerIndex);
+        return this.sendTransactionWithCallback(tx, (tx: Transaction) => {
+            if (callback) {
+                return callback(tx.msg);
+            }
+        }, peerIndex);
     }
 }
 
