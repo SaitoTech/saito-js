@@ -76,11 +76,11 @@ export default class Transaction {
     }
 
     public get timestamp(): number {
-        return this.tx.timestamp;
+        return Number(this.tx.timestamp);
     }
 
-    public set timestamp(timestamp: number) {
-        this.tx.timestamp = timestamp;
+    public set timestamp(timestamp: bigint | number) {
+        this.tx.timestamp = BigInt(timestamp);
     }
 
     public set signature(sig: string) {
