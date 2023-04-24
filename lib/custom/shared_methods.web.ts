@@ -1,5 +1,6 @@
 import Saito from "../../saito";
-import CustomSharedMethods from "./shared_methods.custom";
+
+import CustomSharedMethods from "./custom_shared_methods";
 
 export default class WebSharedMethods extends CustomSharedMethods {
     connectToPeer(peerData: any): void {

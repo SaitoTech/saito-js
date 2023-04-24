@@ -3,6 +3,8 @@ import Transaction from "./lib/transaction";
 import Block from "./lib/block";
 import Factory from "./lib/factory";
 import Peer from "./lib/peer";
+import Wallet from "./lib/wallet";
+import Blockchain from "./lib/blockchain";
 
 // export enum MessageType {
 //     HandshakeChallenge = 1,
@@ -31,6 +33,8 @@ export default class Saito {
     factory = new Factory();
     promises = new Map<number, any>();
     private callbackIndex: number = 1;
+    private wallet: Wallet | null = null;
+    private blockchain: Blockchain | null = null;
 
 
     public static async initialize(configs: any, sharedMethods: SharedMethods, factory = new Factory()) {
@@ -142,13 +146,13 @@ export default class Saito {
         return Saito.getInstance().factory.createBlock(block) as B;
     }
 
-    public async getPublicKey(): Promise<string> {
-        return Saito.getLibInstance().get_public_key();
-    }
-
-    public async getPrivateKey(): Promise<string> {
-        return Saito.getLibInstance().get_private_key();
-    }
+    // public async getPublicKey(): Promise<string> {
+    //     return Saito.getLibInstance().get_public_key();
+    // }
+    //
+    // public async getPrivateKey(): Promise<string> {
+    //     return Saito.getLibInstance().get_private_key();
+    // }
 
     public async processNewPeer(index: bigint, peer_config: any): Promise<void> {
         return Saito.getLibInstance().process_new_peer(index, peer_config);
@@ -201,18 +205,18 @@ export default class Saito {
         return tx;
     }
 
-    public async getPendingTransactions<Tx extends Transaction>(): Promise<Array<Tx>> {
-        let txs = await Saito.getLibInstance().get_pending_txs();
-        return txs.map((tx: any) => Saito.getInstance().factory.createTransaction(tx));
-    }
+    // public async getPendingTransactions<Tx extends Transaction>(): Promise<Array<Tx>> {
+    //     let txs = await Saito.getLibInstance().get_pending_txs();
+    //     return txs.map((tx: any) => Saito.getInstance().factory.createTransaction(tx));
+    // }
 
     public async signAndEncryptTransaction(tx: Transaction) {
         return tx.wasmTransaction.sign_and_encrypt();
     }
 
-    public async getBalance(): Promise<bigint> {
-        return Saito.getLibInstance().get_balance();
-    }
+    // public async getBalance(): Promise<bigint> {
+    //     return Saito.getLibInstance().get_balance();
+    // }
 
     public async getPeers(): Promise<Array<Peer>> {
         let peers = await Saito.getLibInstance().get_peers();
@@ -300,12 +304,13 @@ export default class Saito {
     }
 
     public async propagateServices(peerIndex: bigint, services: string[]) {
-        return Saito.getLibInstance().propagateServices(peerIndex, services);
+        return Saito.getLibInstance().propagate_services(peerIndex, services);
     }
 
     public async sendRequest(message: string, data: any = "", callback?: any, peerIndex?: bigint): Promise<any> {
         console.log("saito.sendRequest : peer = " + peerIndex);
-        let publicKey = await this.getPublicKey();
+        let wallet = await this.getWallet();
+        let publicKey = await wallet.getPublicKey();
         let tx = await this.createTransaction(publicKey, BigInt(0), BigInt(0));
         tx.msg = {
             request: message,
@@ -318,5 +323,33 @@ export default class Saito {
             }
         }, peerIndex);
     }
+
+    public async getWallet() {
+        if (!this.wallet) {
+            let w = await Saito.getLibInstance().get_wallet();
+            this.wallet = new Wallet(w);
+        }
+        return this.wallet;
+    }
+
+    public async getBlockchain() {
+        if (!this.blockchain) {
+            let b = await Saito.getLibInstance().get_blockchain();
+            this.blockchain = new Blockchain(b);
+        }
+        return this.blockchain;
+    }
+
+    // public async loadWallet() {
+    //     return Saito.getLibInstance().load_wallet();
+    // }
+    //
+    // public async saveWallet() {
+    //     return Saito.getLibInstance().save_wallet();
+    // }
+    //
+    // public async resetWallet() {
+    //     return Saito.getLibInstance().reset_wallet();
+    // }
 }
 

@@ -1,3 +1,6 @@
+import Wallet from "./lib/wallet";
+import Blockchain from "./lib/blockchain";
+
 export default interface SharedMethods {
     sendMessage(peerIndex: bigint, buffer: Uint8Array): void;
 
@@ -27,4 +30,11 @@ export default interface SharedMethods {
 
     sendInterfaceEvent(event: String, peerIndex: bigint): void;
 
+    saveWallet(wallet: Wallet): void;
+
+    loadWallet(wallet: Wallet): void;
+
+    saveBlockchain(blockchain: Blockchain): void;
+
+    loadBlockchain(blockchain: Blockchain): void;
 }

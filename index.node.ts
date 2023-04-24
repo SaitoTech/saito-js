@@ -6,6 +6,8 @@ import Slip from "./lib/slip";
 import Block from "./lib/block";
 import Peer from "./lib/peer";
 import Factory from "./lib/factory";
+import Wallet from './lib/wallet';
+import Blockchain from './lib/blockchain';
 
 let cr = require('crypto');
 globalThis.crypto = cr.webcrypto;
@@ -33,6 +35,8 @@ export async function initialize(configs: Configs, sharedMethods: SharedMethods,
     Slip.Type = s.WasmSlip;
     Block.Type = s.WasmBlock;
     Peer.Type = s.WasmPeer;
+    Wallet.Type = s.WasmWallet;
+    Blockchain.Type = s.WasmBlockchain;
 
     return Saito.initialize(configs, sharedMethods, factory);
 }

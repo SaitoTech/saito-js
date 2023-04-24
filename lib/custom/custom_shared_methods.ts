@@ -1,5 +1,7 @@
 import SharedMethods from "../../shared_methods";
 import Saito from "../../saito";
+import Wallet from "../wallet";
+import Blockchain from "../blockchain";
 
 export default class CustomSharedMethods implements SharedMethods {
     processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): Promise<void> {
@@ -69,4 +71,19 @@ export default class CustomSharedMethods implements SharedMethods {
         throw new Error("Method not implemented.");
     }
 
+    saveWallet(wallet: Wallet): void {
+        throw new Error("Method not implemented.");
+    }
+
+    loadWallet(wallet: Wallet): void {
+        throw new Error("Method not implemented.");
+    }
+
+    saveBlockchain(blockchain: Blockchain): void {
+        throw new Error("Method not implemented.");
+    }
+
+    loadBlockchain(blockchain: Blockchain): void {
+        throw new Error("Method not implemented.");
+    }
 }
