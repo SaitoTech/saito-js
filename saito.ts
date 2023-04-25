@@ -3,7 +3,7 @@ import Transaction from "./lib/transaction";
 import Block from "./lib/block";
 import Factory from "./lib/factory";
 import Peer from "./lib/peer";
-import Wallet from "./lib/wallet";
+import Wallet, { DefaultEmptyPrivateKey } from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
 
 // export enum MessageType {
@@ -39,7 +39,8 @@ export default class Saito {
   public static async initialize(
     configs: any,
     sharedMethods: SharedMethods,
-    factory = new Factory()
+    factory = new Factory(),
+    privateKey: string
   ) {
     this.instance = new Saito(factory);
 
@@ -90,9 +91,23 @@ export default class Saito {
       send_interface_event: (event: string, peerIndex: bigint) => {
         return sharedMethods.sendInterfaceEvent(event, peerIndex);
       },
+      save_wallet: (wallet: any) => {
+        return sharedMethods.saveWallet(wallet);
+      },
+      load_wallet: (wallet: any) => {
+        return sharedMethods.loadWallet(wallet);
+      },
+      save_blockchain: (blockchain: any) => {
+        return sharedMethods.saveBlockchain(blockchain);
+      },
+      load_blockchain: (blockchain: any) => {
+        return sharedMethods.loadBlockchain(blockchain);
+      },
     };
-
-    await Saito.getLibInstance().initialize(JSON.stringify(configs));
+    if (privateKey === "") {
+      privateKey = DefaultEmptyPrivateKey;
+    }
+    await Saito.getLibInstance().initialize(JSON.stringify(configs), privateKey);
 
     console.log("saito initialized");
 
