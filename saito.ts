@@ -220,7 +220,6 @@ export default class Saito {
     );
     let tx = Saito.getInstance().factory.createTransaction(wasmTx) as T;
     tx.timestamp = new Date().getTime();
-    console.log("wwwwwwwwwww : " + tx.timestamp);
     return tx;
   }
 

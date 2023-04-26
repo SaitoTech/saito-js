@@ -9,8 +9,11 @@ import Factory from "./lib/factory";
 import Wallet from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
 
-let cr = require("crypto");
-globalThis.crypto = cr.webcrypto;
+const NODE_MAJOR_VERSION = parseInt(process.versions.node.split(".")[0]);
+if (NODE_MAJOR_VERSION < 20) {
+  let cr = require("crypto");
+  globalThis.crypto = cr.webcrypto;
+}
 
 /**
  *
