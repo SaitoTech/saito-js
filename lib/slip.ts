@@ -49,8 +49,8 @@ export default class Slip {
         return this.slip.amount;
     }
 
-    public set amount(amount: bigint) {
-        this.slip.amount = amount;
+    public set amount(amount: bigint | number) {
+        this.slip.amount = BigInt(amount);
     }
 
     public get publicKey(): string {
