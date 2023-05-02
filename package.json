@@ -4,6 +4,7 @@
   "description": "js wrappings around saito-core using wasm",
   "scripts": {
     "test": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha --require ts-node/register 'tests/**/*.ts'",
+    "build prod": "webpack --config webpack.prod.config.js",
     "build": "webpack",
     "serve": "webpack-dev-server"
   },
