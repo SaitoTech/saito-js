@@ -23,17 +23,22 @@ jobs:
 
       - name: get latest version
         run: |
-          npm show saito-js version >> "$LATEST_SAITO_VERSION"
-          npm pkg get version >> "$PACKAGE_SAITO_VERSION"
+          echo latest_version=$(npm show saito-js version) >> $GITHUB_ENV
+          echo current_version=$(npm pkg get version) >> $GITHUB_ENV
       #        working-directory: saito-wasm
+      - name: version check fail
+        run: |
+          echo "same version is already published"
+          echo "current version : ${{ env.current_version }}"
+          echo "published version : ${{ env.latest_version }}"
 
       - name: Install npm packages
-        if: $LATEST_SAITO_VERSION != $PACKAGE_SAITO_VERSION
+        if: ${{ env.latest_version != env.current_version }}
         run: npm ci
       #        working-directory: saito-wasm
 
       - name: Publish package
-        if: $LATEST_SAITO_VERSION != $PACKAGE_SAITO_VERSION
+        if: ${{ env.latest_version != env.current_version }}
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
