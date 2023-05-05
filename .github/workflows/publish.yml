@@ -38,6 +38,10 @@ jobs:
         run: npm ci
       #        working-directory: saito-wasm
 
+      - name: build
+        if: ${{ env.latest_version != env.current_version }}
+        run: npm run build
+
       - name: Publish package
         if: ${{ env.latest_version != env.current_version }}
         run: npm publish
