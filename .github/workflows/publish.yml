@@ -1,0 +1,40 @@
+name: publish
+
+on:
+  push:
+    branches: [ prod ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/Checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+      #          cache-dependency-path: saito-wasm/package-lock.json
+
+      - name: get latest version
+        run: |
+          npm show saito-js version >> "$LATEST_SAITO_VERSION"
+          npm pkg get version >> "$PACKAGE_SAITO_VERSION"
+      #        working-directory: saito-wasm
+
+      - name: Install npm packages
+        if: $LATEST_SAITO_VERSION != $PACKAGE_SAITO_VERSION
+        run: npm ci
+      #        working-directory: saito-wasm
+
+      - name: Publish package
+        if: $LATEST_SAITO_VERSION != $PACKAGE_SAITO_VERSION
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#        working-directory: saito-wasm
