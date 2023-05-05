@@ -27,6 +27,7 @@ jobs:
           echo current_version=$(npm pkg get version) >> $GITHUB_ENV
       #        working-directory: saito-wasm
       - name: version check fail
+        if: ${{ env.latest_version == env.current_version }}
         run: |
           echo "same version is already published"
           echo "current version : ${{ env.current_version }}"
