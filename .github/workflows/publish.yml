@@ -42,9 +42,15 @@ jobs:
         if: ${{ env.latest_version != env.current_version }}
         run: npm run build
 
+      - name: copying
+        if: ${{ env.latest_version != env.current_version }}
+        run: |
+          cp package.json dist
+          cp .npmignore dist
+
       - name: Publish package
         if: ${{ env.latest_version != env.current_version }}
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-#        working-directory: saito-wasm
+        working-directory: dist
