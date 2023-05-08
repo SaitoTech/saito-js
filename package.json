@@ -1,11 +1,11 @@
 {
   "name": "saito-js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "js wrappings around saito-core using wasm",
   "scripts": {
     "test": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha --require ts-node/register 'tests/**/*.ts'",
     "build prod": "webpack --config webpack.prod.config.js",
-    "build": "webpack",
+    "build": "tsc",
     "serve": "webpack-dev-server"
   },
   "author": "",
