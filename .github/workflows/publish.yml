@@ -46,6 +46,8 @@ jobs:
         if: ${{ env.latest_version != env.current_version }}
         run: |
           cp package.json dist
+          cp package-lock.json dist
+          cp tsconfig.json dist
           cp .npmignore dist
 
       - name: Publish package
