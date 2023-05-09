@@ -2,9 +2,9 @@ name: publish
 
 on:
   push:
-    branches: [ prod, master ]
-  pull_request:
-    branches: [ develop, master ]
+    branches: [ master ]
+#  pull_request:
+#    branches: [ develop, master ]
 
 jobs:
   publish:
