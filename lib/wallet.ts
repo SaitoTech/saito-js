@@ -14,6 +14,10 @@ export default class Wallet {
     this.wallet = wallet;
   }
 
+  public free() {
+    this.wallet.free();
+  }
+
   public async save() {
     return this.wallet.save();
   }

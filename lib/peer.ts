@@ -1,50 +1,54 @@
-import type {WasmPeer} from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmPeer } from "saito-wasm/dist/types/pkg/node/index_bg";
 
 export default class Peer {
-    protected peer: WasmPeer;
-    public static Type: any;
+  protected peer: WasmPeer;
+  public static Type: any;
 
-    constructor(peer?: WasmPeer, peerIndex?: bigint) {
-        if (peer) {
-            this.peer = peer;
-        } else {
-            this.peer = new Peer.Type(peerIndex);
-        }
+  constructor(peer?: WasmPeer, peerIndex?: bigint) {
+    if (peer) {
+      this.peer = peer;
+    } else {
+      this.peer = new Peer.Type(peerIndex);
     }
+  }
 
-    public get publicKey(): string {
-        return this.peer.public_key;
-    }
+  public free() {
+    this.peer.free();
+  }
 
-    // public set publicKey(key: string) {
-    //     this.peer.public_key = key;
-    // }
+  public get publicKey(): string {
+    return this.peer.public_key;
+  }
 
-    public get keyList(): Array<string> {
-        return this.peer.key_list;
-    }
+  // public set publicKey(key: string) {
+  //     this.peer.public_key = key;
+  // }
 
-    public get peerIndex(): bigint {
-        return this.peer.peer_index;
-    }
+  public get keyList(): Array<string> {
+    return this.peer.key_list;
+  }
 
-    public get synctype(): string {
-        return this.peer.sync_type;
-    }
+  public get peerIndex(): bigint {
+    return this.peer.peer_index;
+  }
 
-    public get services(): string[] {
-        return this.peer.services;
-    }
+  public get synctype(): string {
+    return this.peer.sync_type;
+  }
 
-    public set services(s: string[]) {
-        this.peer.services = s;
-    }
+  public get services(): string[] {
+    return this.peer.services;
+  }
 
-    public hasService(service: string): boolean {
-        return this.peer.has_service(service);
-    }
+  public set services(s: string[]) {
+    this.peer.services = s;
+  }
 
-    public isMainPeer(): boolean {
-        return this.peer.is_main_peer();
-    }
+  public hasService(service: string): boolean {
+    return this.peer.has_service(service);
+  }
+
+  public isMainPeer(): boolean {
+    return this.peer.is_main_peer();
+  }
 }
