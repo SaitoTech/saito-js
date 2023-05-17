@@ -1,23 +1,22 @@
 import type { WasmPeer } from "saito-wasm/dist/types/pkg/node/index_bg";
+import WasmWrapper from "./wasm_wrapper";
 
-export default class Peer {
-  protected peer: WasmPeer;
+export default class Peer extends WasmWrapper<WasmPeer> {
   public static Type: any;
 
   constructor(peer?: WasmPeer, peerIndex?: bigint) {
-    if (peer) {
-      this.peer = peer;
-    } else {
-      this.peer = new Peer.Type(peerIndex);
+    if (!peer) {
+      peer = new Peer.Type(peerIndex);
     }
+    super(peer!);
   }
 
   public free() {
-    this.peer.free();
+    this.instance.free();
   }
 
   public get publicKey(): string {
-    return this.peer.public_key;
+    return this.instance.public_key;
   }
 
   // public set publicKey(key: string) {
@@ -25,30 +24,30 @@ export default class Peer {
   // }
 
   public get keyList(): Array<string> {
-    return this.peer.key_list;
+    return this.instance.key_list;
   }
 
   public get peerIndex(): bigint {
-    return this.peer.peer_index;
+    return this.instance.peer_index;
   }
 
   public get synctype(): string {
-    return this.peer.sync_type;
+    return this.instance.sync_type;
   }
 
   public get services(): string[] {
-    return this.peer.services;
+    return this.instance.services;
   }
 
   public set services(s: string[]) {
-    this.peer.services = s;
+    this.instance.services = s;
   }
 
   public hasService(service: string): boolean {
-    return this.peer.has_service(service);
+    return this.instance.has_service(service);
   }
 
   public isMainPeer(): boolean {
-    return this.peer.is_main_peer();
+    return this.instance.is_main_peer();
   }
 }

@@ -1,6 +1,7 @@
 import type { WasmBlock } from "saito-wasm/dist/types/pkg/node/index_bg";
 import Transaction from "./transaction";
 import Saito from "../saito";
+import WasmWrapper from "./wasm_wrapper";
 
 export enum BlockType {
   Ghost = 0,
@@ -9,37 +10,31 @@ export enum BlockType {
   Full = 3,
 }
 
-export default class Block {
-  protected block: WasmBlock;
+export default class Block extends WasmWrapper<WasmBlock> {
   public static Type: any;
 
   constructor(block?: WasmBlock) {
-    if (block) {
-      this.block = block;
-    } else {
-      this.block = Block.Type();
+    if (!block) {
+      block = Block.Type();
     }
-  }
-
-  public free() {
-    this.block.free();
+    super(block!);
   }
 
   public get transactions(): Array<Transaction> {
-    return this.block.transactions.map((tx) => {
+    return this.instance.transactions.map((tx) => {
       return Saito.getInstance().factory.createTransaction(tx);
     });
   }
 
   public get id(): bigint {
-    return this.block.id;
+    return this.instance.id;
   }
 
   public get hash(): string {
-    return this.block.hash;
+    return this.instance.hash;
   }
 
   public serialize(): Uint8Array {
-    return this.block.serialize();
+    return this.instance.serialize();
   }
 }

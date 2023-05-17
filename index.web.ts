@@ -33,7 +33,7 @@ export async function initialize(
     .then((s) => {
       Saito.setLibInstance(s);
       return s.default().then((output: any) => {
-        console.log("init output = ", output);
+        // console.log("init output = ", output);
         Saito.setWasmMemory(output.memory);
         Transaction.Type = s.WasmTransaction;
         Slip.Type = s.WasmSlip;

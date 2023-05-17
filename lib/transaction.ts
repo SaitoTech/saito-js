@@ -2,6 +2,7 @@ import type { WasmTransaction } from "saito-wasm/dist/types/pkg/node/index_bg";
 import Slip from "./slip";
 import Saito from "../saito";
 import Factory from "./factory";
+import WasmWrapper from "./wasm_wrapper";
 
 export enum TransactionType {
   Normal = 0,
@@ -14,18 +15,16 @@ export enum TransactionType {
   Other = 7,
 }
 
-export default class Transaction {
-  protected tx: WasmTransaction;
+export default class Transaction extends WasmWrapper<WasmTransaction> {
   public static Type: any;
   public msg: any = {};
 
   // TODO : factory pattern might be useful here to remove unnecessary wrappings
   constructor(tx?: WasmTransaction, json?: any) {
-    if (tx) {
-      this.tx = tx;
-    } else {
-      this.tx = new Transaction.Type();
+    if (!tx) {
+      tx = new Transaction.Type();
     }
+    super(tx!);
     if (json) {
       for (let slip of json.to) {
         let s = new Slip(undefined, slip);
@@ -43,93 +42,90 @@ export default class Transaction {
     }
   }
 
-  public free() {
-    this.tx.free();
-    this.msg = {};
-  }
-
   public get wasmTransaction(): WasmTransaction {
-    return this.tx;
+    return this.instance;
   }
 
   public addFromSlip(slip: Slip) {
-    this.tx.add_from_slip(slip.wasmSlip);
+    this.instance.add_from_slip(slip.wasmSlip);
+    // slip.free();
   }
 
   public addToSlip(slip: Slip) {
-    this.tx.add_to_slip(slip.wasmSlip);
+    this.instance.add_to_slip(slip.wasmSlip);
+    // slip.free();
   }
 
   public get to(): Array<Slip> {
-    return this.tx.to.map((slip) => {
+    return this.instance.to.map((slip) => {
       return Saito.getInstance().factory.createSlip(slip);
     });
   }
 
   public get from(): Array<Slip> {
-    return this.tx.from.map((slip) => {
+    return this.instance.from.map((slip) => {
       return Saito.getInstance().factory.createSlip(slip);
     });
   }
 
   public get type(): TransactionType {
-    return this.tx.type as TransactionType;
+    return this.instance.type as TransactionType;
   }
 
   public set type(type: TransactionType) {
-    this.tx.type = type as number;
+    this.instance.type = type as number;
   }
 
   public get timestamp(): number {
-    return Number(this.tx.timestamp);
+    return Number(this.instance.timestamp);
   }
 
   public set timestamp(timestamp: bigint | number) {
-    this.tx.timestamp = BigInt(timestamp);
+    this.instance.timestamp = BigInt(timestamp);
   }
 
   public set signature(sig: string) {
-    this.tx.signature = sig;
+    this.instance.signature = sig;
   }
 
   public get signature(): string {
-    return this.tx.signature;
+    return this.instance.signature;
   }
 
   public set data(buffer: Uint8Array) {
-    this.tx.data = buffer;
+    this.instance.data = buffer;
   }
 
   public get data(): Uint8Array {
-    return this.tx.data;
+    return this.instance.data;
   }
 
   public set txs_replacements(r: number) {
-    this.tx.txs_replacements = r;
+    this.instance.txs_replacements = r;
   }
 
   public get txs_replacements(): number {
-    return this.tx.txs_replacements;
+    return this.instance.txs_replacements;
   }
 
   public get total_fees(): bigint {
-    return this.tx.total_fees;
+    return this.instance.total_fees;
   }
 
   public async sign() {
-    return this.tx.sign();
+    return this.instance.sign();
   }
 
   public async signAndEncrypt() {
-    return this.tx.sign_and_encrypt();
+    return this.instance.sign_and_encrypt();
   }
 
   public isFrom(key: string): boolean {
-    return this.tx.is_from(key);
+    return this.instance.is_from(key);
   }
 
   public isTo(key: string): boolean {
-    return this.tx.is_to(key);
+    return this.instance.is_to(key);
   }
 
   public toJson() {
@@ -157,7 +153,7 @@ export default class Transaction {
   }
 
   public serialize(): Uint8Array {
-    return this.tx.serialize();
+    return this.instance.serialize();
   }
 
   public packData() {

@@ -1,4 +1,5 @@
 import type { WasmSlip } from "saito-wasm/dist/types/pkg/node/index_bg";
+import WasmWrapper from "./wasm_wrapper";
 
 export enum SlipType {
   Normal = 0,
@@ -12,16 +13,16 @@ export enum SlipType {
   Other = 8,
 }
 
-export default class Slip {
-  private slip: WasmSlip;
+export default class Slip extends WasmWrapper<WasmSlip> {
+  // private slip: WasmSlip;
   public static Type: any;
 
   public constructor(slip?: WasmSlip, json?: any) {
     if (!slip) {
-      this.slip = new Slip.Type();
-    } else {
-      this.slip = slip;
+      slip = new Slip.Type();
     }
+    super(slip!);
+
     if (json) {
       this.publicKey = json.publicKey;
       this.type = json.type;
@@ -33,68 +34,64 @@ export default class Slip {
     }
   }
 
-  public free() {
-    this.slip.free();
-  }
-
   public get wasmSlip(): WasmSlip {
-    return this.slip;
+    return this.instance;
   }
 
   public get type(): SlipType {
-    return this.slip.slip_type as SlipType;
+    return this.instance.slip_type as SlipType;
   }
 
   public set type(type: SlipType) {
-    this.slip.slip_type = type as number;
+    this.instance.slip_type = type as number;
   }
 
   public get amount(): bigint {
-    return this.slip.amount;
+    return this.instance.amount;
   }
 
   public set amount(amount: bigint | number) {
-    this.slip.amount = BigInt(amount);
+    this.instance.amount = BigInt(amount);
   }
 
   public get publicKey(): string {
-    return this.slip.public_key;
+    return this.instance.public_key;
   }
 
   public set publicKey(key: string) {
-    this.slip.public_key = key;
+    this.instance.public_key = key;
   }
 
   public set index(index: number) {
-    this.slip.slip_index = index;
+    this.instance.slip_index = index;
   }
 
   public get index(): number {
-    return this.slip.slip_index;
+    return this.instance.slip_index;
   }
 
   public set blockId(id: bigint) {
-    this.slip.block_id = id;
+    this.instance.block_id = id;
   }
 
   public get blockId(): bigint {
-    return this.slip.block_id;
+    return this.instance.block_id;
   }
 
   public set txOrdinal(ordinal: bigint) {
-    this.slip.tx_ordinal = ordinal;
+    this.instance.tx_ordinal = ordinal;
   }
 
   public get txOrdinal(): bigint {
-    return this.slip.tx_ordinal;
+    return this.instance.tx_ordinal;
   }
 
   public set utxoKey(key: string) {
-    this.slip.utxo_key = key;
+    this.instance.utxo_key = key;
   }
 
   public get utxoKey(): string {
-    return this.slip.utxo_key;
+    return this.instance.utxo_key;
   }
 
   public toJson(): {
