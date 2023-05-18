@@ -32,7 +32,9 @@ export async function initialize(
     })
     .then((s) => {
       Saito.setLibInstance(s);
-      return s.default().then(() => {
+      return s.default().then((output: any) => {
+        // console.log("init output = ", output);
+        Saito.setWasmMemory(output.memory);
         Transaction.Type = s.WasmTransaction;
         Slip.Type = s.WasmSlip;
         Block.Type = s.WasmBlock;
@@ -41,6 +43,23 @@ export async function initialize(
         Blockchain.Type = s.WasmBlockchain;
         return Saito.initialize(configs, sharedMethods, factory, privateKey);
       });
+    });
+}
+
+export async function test_init() {
+  if (Saito.getLibInstance()) {
+    console.error("saito already initialized");
+    return;
+  }
+  console.log("initializing saito-js");
+
+  return import("saito-wasm/dist/browser")
+    .then((s: any) => {
+      return s.default;
+    })
+    .then((s: any) => {
+      Saito.setLibInstance(s);
+      return s.default();
     });
 }
 

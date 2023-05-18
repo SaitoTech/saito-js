@@ -23,9 +23,11 @@ export default class Factory {
   public createPeer(data?: any): Peer {
     return new Peer(data);
   }
+
   public createWallet(data: any): Wallet {
     return new Wallet(data);
   }
+
   public createBlockchain(data: any): Blockchain {
     return new Blockchain(data);
   }

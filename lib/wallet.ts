@@ -1,33 +1,33 @@
 import type { WasmWallet } from "saito-wasm/dist/types/pkg/node/index_bg";
 import Saito from "../saito";
+import WasmWrapper from "./wasm_wrapper";
 
 export const DefaultEmptyPrivateKey =
   "0000000000000000000000000000000000000000000000000000000000000000";
 export const DefaultEmptyPublicKey =
   "000000000000000000000000000000000000000000000000000000000000000000";
 
-export default class Wallet {
-  protected wallet: WasmWallet;
+export default class Wallet extends WasmWrapper<WasmWallet> {
   public static Type: any;
 
   constructor(wallet: WasmWallet) {
-    this.wallet = wallet;
+    super(wallet);
   }
 
   public async save() {
-    return this.wallet.save();
+    return this.instance.save();
   }
 
   public async load() {
-    return this.wallet.load();
+    return this.instance.load();
   }
 
   public async reset() {
-    return this.wallet.reset();
+    return this.instance.reset();
   }
 
   public async getPublicKey() {
-    let key = await this.wallet.get_public_key();
+    let key = await this.instance.get_public_key();
     return key === DefaultEmptyPublicKey ? "" : key;
   }
 
@@ -35,11 +35,11 @@ export default class Wallet {
     if (key === "") {
       key = DefaultEmptyPublicKey;
     }
-    return this.wallet.set_public_key(key);
+    return this.instance.set_public_key(key);
   }
 
   public async getPrivateKey() {
-    let key = await this.wallet.get_private_key();
+    let key = await this.instance.get_private_key();
     return key === DefaultEmptyPrivateKey ? "" : key;
   }
 
@@ -47,15 +47,15 @@ export default class Wallet {
     if (key === "") {
       key = DefaultEmptyPrivateKey;
     }
-    return this.wallet.set_private_key(key);
+    return this.instance.set_private_key(key);
   }
 
   public async getBalance() {
-    return this.wallet.get_balance();
+    return this.instance.get_balance();
   }
 
   public async getPendingTxs() {
-    let txs = await this.wallet.get_pending_txs();
+    let txs = await this.instance.get_pending_txs();
     return txs.map((tx: any) => Saito.getInstance().factory.createTransaction(tx));
   }
 }
