@@ -112,9 +112,12 @@ export default class Saito {
 
     console.log("saito initialized");
 
-    setInterval(() => {
-      Saito.getLibInstance().process_timer_event(BigInt(100));
-    }, 100);
+    let intervalTime = 100;
+    setInterval(async () => {
+      // await Saito.getLibInstance().test_buffer_out_async();
+      // Saito.getLibInstance().test_buffer_out();
+      await Saito.getLibInstance().process_timer_event(BigInt(intervalTime));
+    }, intervalTime);
     setInterval(() => {
       if (Saito.getWasmMemory()) {
         console.log(`WASM memory usage is ${Saito.getWasmMemory()!.buffer.byteLength} bytes`);
