@@ -1,119 +1,120 @@
-import type {WasmSlip} from 'saito-wasm/dist/types/pkg/node/index_bg';
+import type { WasmSlip } from "saito-wasm/dist/types/pkg/node/index_bg";
+import WasmWrapper from "./wasm_wrapper";
 
 export enum SlipType {
-    Normal = 0,
-    ATR = 1,
-    VipInput = 2,
-    VipOutput = 3,
-    MinerInput = 4,
-    MinerOutput = 5,
-    RouterInput = 6,
-    RouterOutput = 7,
-    Other = 8,
+  Normal = 0,
+  ATR = 1,
+  VipInput = 2,
+  VipOutput = 3,
+  MinerInput = 4,
+  MinerOutput = 5,
+  RouterInput = 6,
+  RouterOutput = 7,
+  Other = 8,
 }
 
-export default class Slip {
-    private slip: WasmSlip;
-    public static Type: any;
+export default class Slip extends WasmWrapper<WasmSlip> {
+  // private slip: WasmSlip;
+  public static Type: any;
 
-    public constructor(slip?: WasmSlip, json?: any) {
-        if (!slip) {
-            this.slip = new Slip.Type();
-        } else {
-            this.slip = slip;
-        }
-        if (json) {
-            this.publicKey = json.publicKey;
-            this.type = json.type;
-            this.amount = json.amount;
-            this.index = json.index;
-            this.blockId = json.blockId;
-            this.txOrdinal = json.txOrdinal;
-            this.utxoKey = json.utxoKey;
-        }
+  public constructor(slip?: WasmSlip, json?: any) {
+    if (!slip) {
+      slip = new Slip.Type();
     }
+    super(slip!);
 
-    public get wasmSlip(): WasmSlip {
-        return this.slip;
+    if (json) {
+      this.publicKey = json.publicKey;
+      this.type = json.type;
+      this.amount = json.amount;
+      this.index = json.index;
+      this.blockId = json.blockId;
+      this.txOrdinal = json.txOrdinal;
+      this.utxoKey = json.utxoKey;
     }
+  }
 
-    public get type(): SlipType {
-        return this.slip.slip_type as SlipType;
-    }
+  public get wasmSlip(): WasmSlip {
+    return this.instance;
+  }
 
-    public set type(type: SlipType) {
-        this.slip.slip_type = type as number;
-    }
+  public get type(): SlipType {
+    return this.instance.slip_type as SlipType;
+  }
 
-    public get amount(): bigint {
-        return this.slip.amount;
-    }
+  public set type(type: SlipType) {
+    this.instance.slip_type = type as number;
+  }
 
-    public set amount(amount: bigint | number) {
-        this.slip.amount = BigInt(amount);
-    }
+  public get amount(): bigint {
+    return this.instance.amount;
+  }
 
-    public get publicKey(): string {
-        return this.slip.public_key;
-    }
+  public set amount(amount: bigint | number) {
+    this.instance.amount = BigInt(amount);
+  }
 
-    public set publicKey(key: string) {
-        this.slip.public_key = key;
-    }
+  public get publicKey(): string {
+    return this.instance.public_key;
+  }
 
-    public set index(index: number) {
-        this.slip.slip_index = index;
-    }
+  public set publicKey(key: string) {
+    this.instance.public_key = key;
+  }
 
-    public get index(): number {
-        return this.slip.slip_index;
-    }
+  public set index(index: number) {
+    this.instance.slip_index = index;
+  }
 
-    public set blockId(id: bigint) {
-        this.slip.block_id = id;
-    }
+  public get index(): number {
+    return this.instance.slip_index;
+  }
 
-    public get blockId(): bigint {
-        return this.slip.block_id;
-    }
+  public set blockId(id: bigint) {
+    this.instance.block_id = id;
+  }
 
-    public set txOrdinal(ordinal: bigint) {
-        this.slip.tx_ordinal = ordinal;
-    }
+  public get blockId(): bigint {
+    return this.instance.block_id;
+  }
 
-    public get txOrdinal(): bigint {
-        return this.slip.tx_ordinal;
-    }
+  public set txOrdinal(ordinal: bigint) {
+    this.instance.tx_ordinal = ordinal;
+  }
 
-    public set utxoKey(key: string) {
-        this.slip.utxo_key = key;
-    }
+  public get txOrdinal(): bigint {
+    return this.instance.tx_ordinal;
+  }
 
-    public get utxoKey(): string {
-        return this.slip.utxo_key;
-    }
+  public set utxoKey(key: string) {
+    this.instance.utxo_key = key;
+  }
 
-    public toJson(): {
-        blockId: bigint;
-        utxoKey: string;
-        amount: bigint;
-        index: number;
-        publicKey: string;
-        txOrdinal: bigint;
-        type: any;
-    } {
-        return {
-            publicKey: this.publicKey,
-            type: this.type,
-            amount: this.amount,
-            index: this.index,
-            blockId: this.blockId,
-            txOrdinal: this.txOrdinal,
-            utxoKey: this.utxoKey,
-        };
-    }
+  public get utxoKey(): string {
+    return this.instance.utxo_key;
+  }
 
-    public clone() {
-        return new Slip(undefined, this.toJson());
-    }
+  public toJson(): {
+    blockId: bigint;
+    utxoKey: string;
+    amount: bigint;
+    index: number;
+    publicKey: string;
+    txOrdinal: bigint;
+    type: any;
+  } {
+    return {
+      publicKey: this.publicKey,
+      type: this.type,
+      amount: this.amount,
+      index: this.index,
+      blockId: this.blockId,
+      txOrdinal: this.txOrdinal,
+      utxoKey: this.utxoKey,
+    };
+  }
+
+  public clone() {
+    return new Slip(undefined, this.toJson());
+  }
 }
