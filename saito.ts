@@ -104,6 +104,9 @@ export default class Saito {
       load_blockchain: (blockchain: any) => {
         return sharedMethods.loadBlockchain(blockchain);
       },
+      get_my_services: () => {
+        return sharedMethods.getMyServices();
+      },
     };
     if (privateKey === "") {
       privateKey = DefaultEmptyPrivateKey;
