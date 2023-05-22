@@ -1,5 +1,5 @@
 import WasmWrapper from "./wasm_wrapper";
-import { WasmPeerServiceList } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmPeerServiceList } from "saito-wasm/dist/types/pkg/node/index_bg";
 import PeerService from "./peer_service";
 
 export default class PeerServiceList extends WasmWrapper<WasmPeerServiceList> {
@@ -10,6 +10,10 @@ export default class PeerServiceList extends WasmWrapper<WasmPeerServiceList> {
   }
 
   public push(service: PeerService) {
-    this.instance.push(service.instance);
+    let s = new PeerService();
+    s.instance.service = service.instance.service;
+    s.instance.domain = service.instance.domain;
+    s.instance.name = service.instance.name;
+    this.instance.push(s.instance);
   }
 }
