@@ -48,12 +48,10 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
 
   public addFromSlip(slip: Slip) {
     this.instance.add_from_slip(slip.wasmSlip);
-    // slip.free();
   }
 
   public addToSlip(slip: Slip) {
     this.instance.add_to_slip(slip.wasmSlip);
-    // slip.free();
   }
 
   public get to(): Array<Slip> {

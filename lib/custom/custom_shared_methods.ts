@@ -1,9 +1,12 @@
 import SharedMethods from "../../shared_methods";
 import Saito from "../../saito";
-import Wallet from "../wallet";
-import Blockchain from "../blockchain";
+import PeerServiceList from "../peer_service_list";
 
 export default class CustomSharedMethods implements SharedMethods {
+  getMyServices(): PeerServiceList {
+    return new PeerServiceList();
+  }
+
   processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): Promise<void> {
     throw new Error("Method not implemented.");
   }
