@@ -1,4 +1,4 @@
-import type { WasmPeer } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmPeer, WasmPeerService } from "saito-wasm/dist/types/pkg/node/index_bg";
 import WasmWrapper from "./wasm_wrapper";
 
 export default class Peer extends WasmWrapper<WasmPeer> {
@@ -9,10 +9,6 @@ export default class Peer extends WasmWrapper<WasmPeer> {
       peer = new Peer.Type(peerIndex);
     }
     super(peer!);
-  }
-
-  public free() {
-    this.instance.free();
   }
 
   public get publicKey(): string {
@@ -35,11 +31,11 @@ export default class Peer extends WasmWrapper<WasmPeer> {
     return this.instance.sync_type;
   }
 
-  public get services(): string[] {
+  public get services(): WasmPeerService[] {
     return this.instance.services;
   }
 
-  public set services(s: string[]) {
+  public set services(s: WasmPeerService[]) {
     this.instance.services = s;
   }
 
