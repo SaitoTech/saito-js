@@ -105,7 +105,7 @@ export default class Saito {
         return sharedMethods.loadBlockchain(blockchain);
       },
       get_my_services: () => {
-        return sharedMethods.getMyServices();
+        return sharedMethods.getMyServices().instance;
       },
     };
     if (privateKey === "") {
@@ -343,9 +343,9 @@ export default class Saito {
       });
   }
 
-  public async propagateServices(peerIndex: bigint, services: string[]) {
-    return Saito.getLibInstance().propagate_services(peerIndex, services);
-  }
+  // public async propagateServices(peerIndex: bigint, services: string[]) {
+  //   return Saito.getLibInstance().propagate_services(peerIndex, services);
+  // }
 
   public async sendRequest(
     message: string,

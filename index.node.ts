@@ -9,6 +9,7 @@ import Factory from "./lib/factory";
 import Wallet from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
 import PeerService from "./lib/peer_service";
+import PeerServiceList from "./lib/peer_service_list";
 
 const NODE_MAJOR_VERSION = parseInt(process.versions.node.split(".")[0]);
 if (NODE_MAJOR_VERSION < 19) {
@@ -46,6 +47,7 @@ export async function initialize(
   Wallet.Type = s.WasmWallet;
   Blockchain.Type = s.WasmBlockchain;
   PeerService.Type = s.WasmPeerService;
+  PeerServiceList.Type = s.WasmPeerServiceList;
 
   return Saito.initialize(configs, sharedMethods, factory, privateKey);
 }

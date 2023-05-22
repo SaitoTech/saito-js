@@ -9,6 +9,7 @@ import Factory from "./lib/factory";
 import Wallet from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
 import PeerService from "./lib/peer_service";
+import PeerServiceList from "./lib/peer_service_list";
 
 /**
  *
@@ -43,6 +44,7 @@ export async function initialize(
         Wallet.Type = s.WasmWallet;
         Blockchain.Type = s.WasmBlockchain;
         PeerService.Type = s.WasmPeerService;
+        PeerServiceList.Type = s.WasmPeerServiceList;
 
         return Saito.initialize(configs, sharedMethods, factory, privateKey);
       });

@@ -1,5 +1,5 @@
 export default class WasmWrapper<T> {
-  protected instance: T;
+  public instance: T;
 
   constructor(instance: T) {
     this.instance = instance;

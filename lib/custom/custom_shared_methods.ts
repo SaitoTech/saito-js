@@ -1,10 +1,10 @@
 import SharedMethods from "../../shared_methods";
 import Saito from "../../saito";
-import { WasmPeerService } from "saito-wasm/dist/types/pkg/node/index_bg";
+import PeerServiceList from "../peer_service_list";
 
 export default class CustomSharedMethods implements SharedMethods {
-  getMyServices(): WasmPeerService[] {
-    return [];
+  getMyServices(): PeerServiceList {
+    return new PeerServiceList();
   }
 
   processApiCall(buffer: Uint8Array, msgIndex: number, peerIndex: bigint): Promise<void> {

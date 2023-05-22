@@ -1,6 +1,6 @@
 import Wallet from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
-import type { WasmPeerService } from "saito-wasm/dist/types/pkg/node/index_bg";
+import PeerServiceList from "./lib/peer_service_list";
 
 export default interface SharedMethods {
   sendMessage(peerIndex: bigint, buffer: Uint8Array): void;
@@ -39,5 +39,5 @@ export default interface SharedMethods {
 
   loadBlockchain(blockchain: Blockchain): void;
 
-  getMyServices(): Array<WasmPeerService>;
+  getMyServices(): PeerServiceList;
 }
