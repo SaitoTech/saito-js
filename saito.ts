@@ -92,6 +92,9 @@ export default class Saito {
       send_interface_event: (event: string, peerIndex: bigint) => {
         return sharedMethods.sendInterfaceEvent(event, peerIndex);
       },
+      send_block_success: (hash: string, blockId: bigint) => {
+        return sharedMethods.sendBlockSuccess(hash, blockId);
+      },
       save_wallet: (wallet: any) => {
         return sharedMethods.saveWallet(wallet);
       },
@@ -116,16 +119,28 @@ export default class Saito {
     console.log("saito initialized");
 
     let intervalTime = 100;
-    setInterval(async () => {
-      // await Saito.getLibInstance().test_buffer_out_async();
-      // Saito.getLibInstance().test_buffer_out();
-      await Saito.getLibInstance().process_timer_event(BigInt(intervalTime));
-    }, intervalTime);
-    setInterval(() => {
-      if (Saito.getWasmMemory()) {
-        console.log(`WASM memory usage is ${Saito.getWasmMemory()!.buffer.byteLength} bytes`);
-      }
-    }, 5000);
+    this.instance.call_timed_functions(intervalTime, Date.now() - intervalTime);
+    // setInterval(async () => {
+    //   // await Saito.getLibInstance().test_buffer_out_async();
+    //   // Saito.getLibInstance().test_buffer_out();
+    //   await Saito.getLibInstance().process_timer_event(BigInt(intervalTime));
+    // }, intervalTime);
+    // setInterval(() => {
+    //   if (Saito.getWasmMemory()) {
+    //     console.log(`WASM memory usage is ${Saito.getWasmMemory()!.buffer.byteLength} bytes`);
+    //   }
+    // }, 5000);
+  }
+
+  public call_timed_functions(interval: number, lastCalledTime: number) {
+    setTimeout(() => {
+      let time = Date.now();
+      Saito.getLibInstance()
+        .process_timer_event(BigInt(time - lastCalledTime))
+        .then(() => {
+          this.call_timed_functions(interval, time);
+        });
+    }, interval);
   }
 
   constructor(factory: Factory) {
