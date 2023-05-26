@@ -21,13 +21,13 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
     return this.instance.reset();
   }
 
-  public affixCallbacks(block: Block) {}
+  public async affixCallbacks(block: Block) {}
 
   public async runCallbacks(block_hash: string, from_blocks_back: bigint) {
     let block = await Saito.getInstance().getBlock(block_hash);
     let callbacks = this.callbacks.get(block_hash);
     let callbackIndices = this.callbackIndices.get(block_hash);
-    let confirmations = this.confirmations.get(block_hash) || BigInt(0);
+    let confirmations = this.confirmations.get(block_hash) || BigInt(-1);
     if (Number(confirmations) && callbacks) {
       for (let i = Number(confirmations) + 1; i < from_blocks_back; i++) {
         for (let j = 0; j < callbacks.length; ++j) {
@@ -44,8 +44,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
   }
 
   public async onAddBlockSuccess(block_id: number, hash: string) {
-    // TODO : there's currently no way of calling this method from saito-js itself. need to refactor the design
-    // related to onConfirmation() calls so a single place will handle all the callback functionality
+    // TODO : there's currently no way of calling this method from saito-js itself. need to refactor the design related to onConfirmation() calls so a single place will handle all the callback functionality
     let already_processed_callbacks = false;
     if (block_id <= this.last_callback_block_id) {
       already_processed_callbacks = true;
@@ -54,7 +53,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
     let block = await Saito.getInstance().getBlock(hash);
     if (!already_processed_callbacks) {
       // this block is initialized with zero-confs processed
-      this.affixCallbacks(block);
+      await this.affixCallbacks(block);
 
       //
       // don't run callbacks if reloading (force!)

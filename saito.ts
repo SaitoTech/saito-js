@@ -192,6 +192,8 @@ export default class Saito {
   }
 
   public async getBlock<B extends Block>(blockHash: string): Promise<B> {
+    // console.assert(!!Saito.libInstance, "wasm lib instance not set");
+    // console.log("lib instance : ", Saito.getLibInstance());
     let block = await Saito.getLibInstance().get_block(blockHash);
     return Saito.getInstance().factory.createBlock(block) as B;
   }
@@ -319,18 +321,18 @@ export default class Saito {
   ): Promise<any> {
     // TODO : implement retry on fail
     // TODO : stun code goes here probably???
-    console.log(
-      "saito.sendTransactionWithCallback : peer = " + peerIndex + " sig = " + transaction.signature
-    );
+    // console.log(
+    //   "saito.sendTransactionWithCallback : peer = " + peerIndex + " sig = " + transaction.signature
+    // );
     let buffer = transaction.wasmTransaction.serialize();
-    console.log(
-      "sendTransactionWithCallback : " +
-        peerIndex +
-        " with length : " +
-        buffer.byteLength +
-        " sent : ",
-      transaction.msg
-    );
+    // console.log(
+    //   "sendTransactionWithCallback : " +
+    //     peerIndex +
+    //     " with length : " +
+    //     buffer.byteLength +
+    //     " sent : ",
+    //   transaction.msg
+    // );
     await this.sendApiCall(buffer, peerIndex || BigInt(0), !!callback)
       .then((buffer: Uint8Array) => {
         if (callback) {
