@@ -15,7 +15,7 @@ export default class Block extends WasmWrapper<WasmBlock> {
 
   constructor(block?: WasmBlock) {
     if (!block) {
-      block = Block.Type();
+      block = new Block.Type();
     }
     super(block!);
   }
@@ -36,5 +36,22 @@ export default class Block extends WasmWrapper<WasmBlock> {
 
   public serialize(): Uint8Array {
     return this.instance.serialize();
+  }
+
+  public get file_name() {
+    return this.instance.file_name;
+  }
+
+  public hasKeylistTxs(keylist: Array<string>): boolean {
+    return this.instance.has_keylist_txs(keylist);
+  }
+
+  public generateLiteBlock(keylist: Array<string>): Block {
+    let block = this.instance.generate_lite_block(keylist);
+    return Saito.getInstance().factory.createBlock(block);
+  }
+
+  public deserialize(buffer: Uint8Array) {
+    this.instance.deserialize(buffer);
   }
 }

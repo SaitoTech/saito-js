@@ -111,10 +111,12 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
   }
 
   public async sign() {
+    this.packData();
     return this.instance.sign();
   }
 
   public async signAndEncrypt() {
+    this.packData();
     return this.instance.sign_and_encrypt();
   }
 
@@ -160,16 +162,20 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
     } else {
       this.data = new Uint8Array(Buffer.from(JSON.stringify(this.msg), "utf-8"));
     }
+    // console.log("msg = ", this.msg);
+    // console.log("tx packed to buffer with length : " + this.data.byteLength, this.data);
   }
 
   public unpackData() {
-    if (this.data.byteLength === 0) {
+    if (this.data.byteLength === 0 || this.type !== TransactionType.Normal) {
       this.msg = {};
     } else {
       try {
         this.msg = JSON.parse(Buffer.from(this.data).toString("utf-8"));
       } catch (error) {
-        console.log("failed parsing tx buffer into msg");
+        console.log("tx type = " + this.type);
+        console.log("buffer : " + this.data.byteLength, this.data);
+        console.log("failed parsing tx buffer into msg", Buffer.from(this.data).toString("utf-8"));
         console.error(error);
         this.msg = {};
       }
