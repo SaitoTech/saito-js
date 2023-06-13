@@ -1,4 +1,4 @@
-import type { WasmBlock } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmBlock } from "saito-wasm/pkg/node/index";
 import Transaction from "./transaction";
 import Saito from "../saito";
 import WasmWrapper from "./wasm_wrapper";

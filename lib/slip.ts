@@ -1,4 +1,4 @@
-import type { WasmSlip } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmSlip } from "saito-wasm/pkg/node/index";
 import WasmWrapper from "./wasm_wrapper";
 
 export enum SlipType {
