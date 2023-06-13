@@ -1,4 +1,4 @@
-import type { WasmBlockchain } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmBlockchain } from "saito-wasm/pkg/node/index";
 import WasmWrapper from "./wasm_wrapper";
 import Saito from "../saito";
 import Block from "./block";

@@ -33,7 +33,9 @@ export async function initialize(
     return;
   }
   console.log("initializing saito-js");
-  let saito = await import("saito-wasm/dist/server");
+  // let saito = await import("saito-wasm/dist/server");
+  let saito = await import("saito-wasm/pkg/node");
+
   console.log("wasm lib loaded");
 
   let s = await saito.default;
