@@ -1,4 +1,4 @@
-import type { WasmWallet } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmWallet } from "saito-wasm/pkg/node/index";
 import Saito from "../saito";
 import WasmWrapper from "./wasm_wrapper";
 

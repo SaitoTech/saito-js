@@ -28,43 +28,28 @@ export async function initialize(
   }
   console.log("initializing saito-js");
 
-  return import("saito-wasm/dist/browser")
+  return import("saito-wasm/pkg/web")
     .then((s: any) => {
-      return s.default;
+      return s.default().then(() => {
+        return s;
+      });
     })
     .then((s) => {
       Saito.setLibInstance(s);
-      return s.default().then((output: any) => {
-        // console.log("init output = ", output);
-        Saito.setWasmMemory(output.memory);
-        Transaction.Type = s.WasmTransaction;
-        Slip.Type = s.WasmSlip;
-        Block.Type = s.WasmBlock;
-        Peer.Type = s.WasmPeer;
-        Wallet.Type = s.WasmWallet;
-        Blockchain.Type = s.WasmBlockchain;
-        PeerService.Type = s.WasmPeerService;
-        PeerServiceList.Type = s.WasmPeerServiceList;
 
-        return Saito.initialize(configs, sharedMethods, factory, privateKey);
-      });
-    });
-}
+      Transaction.Type = s.WasmTransaction;
+      Slip.Type = s.WasmSlip;
+      Block.Type = s.WasmBlock;
+      Peer.Type = s.WasmPeer;
+      Wallet.Type = s.WasmWallet;
+      Blockchain.Type = s.WasmBlockchain;
+      PeerService.Type = s.WasmPeerService;
+      PeerServiceList.Type = s.WasmPeerServiceList;
 
-export async function test_init() {
-  if (Saito.getLibInstance()) {
-    console.error("saito already initialized");
-    return;
-  }
-  console.log("initializing saito-js");
+      console.log("init output = ", s);
+      Saito.setWasmMemory(s.memory);
 
-  return import("saito-wasm/dist/browser")
-    .then((s: any) => {
-      return s.default;
-    })
-    .then((s: any) => {
-      Saito.setLibInstance(s);
-      return s.default();
+      return Saito.initialize(configs, sharedMethods, factory, privateKey);
     });
 }
 

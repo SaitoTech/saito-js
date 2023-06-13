@@ -1,4 +1,4 @@
-import type { WasmPeer, WasmPeerService } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmPeer, WasmPeerService } from "saito-wasm/pkg/node/index";
 import WasmWrapper from "./wasm_wrapper";
 
 export default class Peer extends WasmWrapper<WasmPeer> {

@@ -1,4 +1,4 @@
-import type { WasmTransaction } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmTransaction } from "saito-wasm/pkg/node/index";
 import Slip from "./slip";
 import Saito from "../saito";
 import Factory from "./factory";
@@ -21,10 +21,7 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
 
   // TODO : factory pattern might be useful here to remove unnecessary wrappings
   constructor(tx?: WasmTransaction, json?: any) {
-    if (!tx) {
-      tx = new Transaction.Type();
-    }
-    super(tx!);
+    super(tx || new Transaction.Type());
     if (json) {
       for (let slip of json.to) {
         let s = new Slip(undefined, slip);

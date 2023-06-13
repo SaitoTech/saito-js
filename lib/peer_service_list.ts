@@ -1,5 +1,5 @@
 import WasmWrapper from "./wasm_wrapper";
-import type { WasmPeerServiceList } from "saito-wasm/dist/types/pkg/node/index_bg";
+import type { WasmPeerServiceList } from "saito-wasm/pkg/node/index";
 import PeerService from "./peer_service";
 
 export default class PeerServiceList extends WasmWrapper<WasmPeerServiceList> {

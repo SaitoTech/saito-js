@@ -43,7 +43,8 @@ export default class Saito {
     factory = new Factory(),
     privateKey: string
   ) {
-    this.instance = new Saito(factory);
+    console.log("initializing saito lib");
+    Saito.instance = new Saito(factory);
 
     // @ts-ignore
     globalThis.shared_methods = {
@@ -119,7 +120,7 @@ export default class Saito {
     console.log("saito initialized");
 
     let intervalTime = 100;
-    this.instance.call_timed_functions(intervalTime, Date.now() - intervalTime);
+    Saito.getInstance().call_timed_functions(intervalTime, Date.now() - intervalTime);
     // setInterval(async () => {
     //   // await Saito.getLibInstance().test_buffer_out_async();
     //   // Saito.getLibInstance().test_buffer_out();
@@ -283,7 +284,7 @@ export default class Saito {
   }
 
   public async propagateTransaction(tx: Transaction) {
-    let result = await Saito.getLibInstance().propagate_transaction(tx.wasmTransaction);
+    return Saito.getLibInstance().propagate_transaction(tx.wasmTransaction);
   }
 
   public async sendApiCall(
@@ -307,11 +308,11 @@ export default class Saito {
   }
 
   public async sendApiSuccess(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
-    await Saito.getLibInstance().send_api_success(buffer, msgId, peerIndex);
+    return Saito.getLibInstance().send_api_success(buffer, msgId, peerIndex);
   }
 
   public async sendApiError(msgId: number, buffer: Uint8Array, peerIndex: bigint) {
-    await Saito.getLibInstance().send_api_error(buffer, msgId, peerIndex);
+    return Saito.getLibInstance().send_api_error(buffer, msgId, peerIndex);
   }
 
   public async sendTransactionWithCallback(
