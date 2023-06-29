@@ -144,7 +144,7 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
       let wasmTx = Transaction.Type.deserialize(buffer);
       return factory.createTransaction(wasmTx);
     } catch (e) {
-      console.debug(e);
+      console.error(e);
       return null;
     }
   }
