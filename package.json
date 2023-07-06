@@ -1,6 +1,6 @@
 {
   "name": "saito-js",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "js wrappings around saito-core using wasm",
   "scripts": {
     "test": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha --require ts-node/register 'tests/**/*.ts'",
@@ -11,7 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.2.5",
-    "@types/ws": "^8.5.4",
+    "@types/ws": "^8.5.5",
     "babel-loader": "^8.2.3",
     "babel-polyfill": "^6.26.0",
     "copy-webpack-plugin": "^11.0.0",
@@ -31,13 +31,13 @@
     "cookie-parser": "~1.4.6",
     "saito-wasm": "^0.0.12",
     "cors": "^2.8.5",
-    "debug": "~4.3.4",
+    "debug": "^4.3.4",
     "express": "~4.18.2",
     "morgan": "~1.10.0",
     "node-fetch": "^2.6.1",
     "process": "^0.11.10",
     "url": "^0.11.0",
     "util": "^0.12.5",
-    "ws": "^8.12.0"
+    "ws": "^8.13.0"
   }
 }
