@@ -34,8 +34,9 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
           try {
             await callbacks[j](block, block.transactions[callbackIndices![j]], i);
           } catch (error) {
-            console.error("tx causing error", block.transactions[j].msg);
             console.error(error);
+            console.log("callback index : " + callbackIndices![j]);
+            console.error("tx causing error", block.transactions[callbackIndices![j]].msg);
           }
         }
       }
