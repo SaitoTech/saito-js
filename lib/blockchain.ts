@@ -115,9 +115,9 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
 
       console.log("moving into onNewBlock : " + block.hash + " -- id : " + block.id);
 
-      this.onNewBlock(block, block.instance.in_longest_chain);
+      await this.onNewBlock(block, block.instance.in_longest_chain);
     }
   }
 
-  public onNewBlock(block: Block, lc: boolean) {}
+  public async onNewBlock(block: Block, lc: boolean) {}
 }
