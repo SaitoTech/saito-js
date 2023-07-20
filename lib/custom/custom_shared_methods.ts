@@ -57,7 +57,7 @@ export default class CustomSharedMethods implements SharedMethods {
     }
   }
 
-  readValue(key: string): Uint8Array | null {
+  readValue(key: string): Uint8Array {
     throw new Error("Method not implemented.");
   }
 

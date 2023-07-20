@@ -116,7 +116,8 @@ export default class Saito {
       privateKey = DefaultEmptyPrivateKey;
     }
 
-    await Saito.getLibInstance().initialize(JSON.stringify(configs), privateKey);
+    let configStr = JSON.stringify(configs);
+    await Saito.getLibInstance().initialize(configStr, privateKey);
 
     console.log("saito initialized");
 
