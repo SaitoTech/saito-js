@@ -1,6 +1,5 @@
 import Saito from "./saito";
 import SharedMethods from "./shared_methods";
-import Configs from "./configs";
 import Transaction from "./lib/transaction";
 import Slip from "./lib/slip";
 import Block from "./lib/block";
@@ -10,6 +9,7 @@ import Wallet from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
 import PeerService from "./lib/peer_service";
 import PeerServiceList from "./lib/peer_service_list";
+// import Config from "./lib/config";
 
 const NODE_MAJOR_VERSION = parseInt(process.versions.node.split(".")[0]);
 if (NODE_MAJOR_VERSION < 19) {
@@ -23,7 +23,7 @@ if (NODE_MAJOR_VERSION < 19) {
  * @param sharedMethods
  */
 export async function initialize(
-  configs: Configs,
+  configs: any,
   sharedMethods: SharedMethods,
   factory: Factory,
   privateKey: string
@@ -50,6 +50,7 @@ export async function initialize(
   Blockchain.Type = s.WasmBlockchain;
   PeerService.Type = s.WasmPeerService;
   PeerServiceList.Type = s.WasmPeerServiceList;
+  // Config.Type = s.WasmConfiguration;
 
   return Saito.initialize(configs, sharedMethods, factory, privateKey);
 }

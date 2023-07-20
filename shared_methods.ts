@@ -11,7 +11,7 @@ export default interface SharedMethods {
 
   writeValue(key: string, value: Uint8Array): void;
 
-  readValue(key: string): Uint8Array | null;
+  readValue(key: string): Uint8Array;
 
   loadBlockFileList(): Array<string>;
 

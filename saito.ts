@@ -115,22 +115,14 @@ export default class Saito {
     if (privateKey === "") {
       privateKey = DefaultEmptyPrivateKey;
     }
-    await Saito.getLibInstance().initialize(JSON.stringify(configs), privateKey);
+
+    let configStr = JSON.stringify(configs);
+    await Saito.getLibInstance().initialize(configStr, privateKey);
 
     console.log("saito initialized");
 
     let intervalTime = 100;
     Saito.getInstance().call_timed_functions(intervalTime, Date.now() - intervalTime);
-    // setInterval(async () => {
-    //   // await Saito.getLibInstance().test_buffer_out_async();
-    //   // Saito.getLibInstance().test_buffer_out();
-    //   await Saito.getLibInstance().process_timer_event(BigInt(intervalTime));
-    // }, intervalTime);
-    // setInterval(() => {
-    //   if (Saito.getWasmMemory()) {
-    //     console.log(`WASM memory usage is ${Saito.getWasmMemory()!.buffer.byteLength} bytes`);
-    //   }
-    // }, 5000);
   }
 
   public call_timed_functions(interval: number, lastCalledTime: number) {

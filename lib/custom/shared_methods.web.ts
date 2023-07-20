@@ -71,19 +71,19 @@ export default class WebSharedMethods extends CustomSharedMethods {
     }
   }
 
-  readValue(key: string): Uint8Array | null {
+  readValue(key: string): Uint8Array {
     try {
       let data = localStorage.getItem(key);
       if (!data) {
         console.log("item not found for key : " + key);
-        return null;
+        return new Uint8Array();
       }
       let buffer = Buffer.from(data, "base64");
       return new Uint8Array(buffer);
     } catch (error) {
       console.error(error);
-      return null;
     }
+    return new Uint8Array();
   }
 
   removeValue(key: string): void {

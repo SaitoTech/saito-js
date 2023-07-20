@@ -1,6 +1,5 @@
 import Saito from "./saito";
 import SharedMethods from "./shared_methods";
-import Configs from "./configs";
 import Transaction from "./lib/transaction";
 import Slip from "./lib/slip";
 import Block from "./lib/block";
@@ -11,13 +10,15 @@ import Blockchain from "./lib/blockchain";
 import PeerService from "./lib/peer_service";
 import PeerServiceList from "./lib/peer_service_list";
 
+// import Config from "./lib/config";
+
 /**
  *
  * @param configs
  * @param sharedMethods
  */
 export async function initialize(
-  configs: Configs,
+  configs: any,
   sharedMethods: SharedMethods,
   factory: Factory,
   privateKey: string
@@ -45,6 +46,7 @@ export async function initialize(
       Blockchain.Type = s.WasmBlockchain;
       PeerService.Type = s.WasmPeerService;
       PeerServiceList.Type = s.WasmPeerServiceList;
+      // Config.Type = s.WasmConfiguration;
 
       console.log("init output = ", s);
       Saito.setWasmMemory(s.memory);
