@@ -112,11 +112,6 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
     return this.instance.sign();
   }
 
-  public async signAndEncrypt() {
-    this.packData();
-    return this.instance.sign_and_encrypt();
-  }
-
   public isFrom(key: string): boolean {
     return this.instance.is_from(key);
   }
