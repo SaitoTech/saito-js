@@ -17,7 +17,7 @@ export default class Slip extends WasmWrapper<WasmSlip> {
   // private slip: WasmSlip;
   public static Type: any;
 
-  public constructor(slip?: WasmSlip, json?: any) {
+  constructor(slip?: WasmSlip, json?: any) {
     if (!slip) {
       slip = new Slip.Type();
     }
