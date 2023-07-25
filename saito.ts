@@ -120,7 +120,10 @@ export default class Saito {
     await Saito.getLibInstance().initialize(configStr, privateKey);
 
     console.log("saito initialized");
+  }
 
+  public start() {
+    console.log("starting saito threads");
     let intervalTime = 100;
     Saito.getInstance().call_timed_functions(intervalTime, Date.now() - intervalTime);
   }
