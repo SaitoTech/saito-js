@@ -1,4 +1,4 @@
-import Saito from "./saito";
+import Saito, {LogLevel} from "./saito";
 import SharedMethods from "./shared_methods";
 import Transaction from "./lib/transaction";
 import Slip from "./lib/slip";
@@ -16,12 +16,16 @@ import PeerServiceList from "./lib/peer_service_list";
  *
  * @param configs
  * @param sharedMethods
+ * @param factory
+ * @param privateKey
+ * @param logLevel
  */
 export async function initialize(
   configs: any,
   sharedMethods: SharedMethods,
   factory: Factory,
-  privateKey: string
+  privateKey: string,
+  logLevel: LogLevel = LogLevel.Info
 ) {
   if (Saito.getLibInstance()) {
     console.error("saito already initialized");
@@ -51,7 +55,7 @@ export async function initialize(
       console.log("init output = ", s);
       Saito.setWasmMemory(s.memory);
 
-      return Saito.initialize(configs, sharedMethods, factory, privateKey);
+      return Saito.initialize(configs, sharedMethods, factory, privateKey, logLevel);
     });
 }
 

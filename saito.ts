@@ -25,6 +25,14 @@ import Blockchain from "./lib/blockchain";
 //     ApplicationTransaction,
 // }
 
+export enum LogLevel {
+  Error = 0,
+  Warn,
+  Info,
+  Debug,
+  Trace,
+}
+
 export default class Saito {
   private static instance: Saito;
   private static libInstance: any;
@@ -41,7 +49,8 @@ export default class Saito {
     configs: any,
     sharedMethods: SharedMethods,
     factory = new Factory(),
-    privateKey: string
+    privateKey: string,
+    logLevel: LogLevel
   ) {
     console.log("initializing saito lib");
     Saito.instance = new Saito(factory);
@@ -117,7 +126,7 @@ export default class Saito {
     }
 
     let configStr = JSON.stringify(configs);
-    await Saito.getLibInstance().initialize(configStr, privateKey);
+    await Saito.getLibInstance().initialize(configStr, privateKey, logLevel);
 
     console.log("saito initialized");
   }
