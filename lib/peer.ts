@@ -1,5 +1,6 @@
 import type { WasmPeer, WasmPeerService } from "saito-wasm/pkg/node/index";
 import WasmWrapper from "./wasm_wrapper";
+import { toBase58 } from "./util";
 
 export default class Peer extends WasmWrapper<WasmPeer> {
   public static Type: any;
@@ -12,7 +13,7 @@ export default class Peer extends WasmWrapper<WasmPeer> {
   }
 
   public get publicKey(): string {
-    return this.instance.public_key;
+    return toBase58(this.instance.public_key);
   }
 
   // public set publicKey(key: string) {
@@ -20,7 +21,7 @@ export default class Peer extends WasmWrapper<WasmPeer> {
   // }
 
   public get keyList(): Array<string> {
-    return this.instance.key_list;
+    return this.instance.key_list.map((key) => toBase58(key));
   }
 
   public get peerIndex(): bigint {

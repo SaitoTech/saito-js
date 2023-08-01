@@ -2,6 +2,7 @@ import type { WasmBlock } from "saito-wasm/pkg/node/index";
 import Transaction from "./transaction";
 import Saito from "../saito";
 import WasmWrapper from "./wasm_wrapper";
+import { fromBase58 } from "./util";
 
 export enum BlockType {
   Ghost = 0,
@@ -47,11 +48,13 @@ export default class Block extends WasmWrapper<WasmBlock> {
   }
 
   public hasKeylistTxs(keylist: Array<string>): boolean {
-    return this.instance.has_keylist_txs(keylist);
+    let keys = keylist.map((key) => fromBase58(key));
+    return this.instance.has_keylist_txs(keys);
   }
 
   public generateLiteBlock(keylist: Array<string>): Block {
-    let block = this.instance.generate_lite_block(keylist);
+    let keys = keylist.map((key) => fromBase58(key));
+    let block = this.instance.generate_lite_block(keys);
     return Saito.getInstance().factory.createBlock(block);
   }
 

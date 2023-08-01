@@ -14,7 +14,6 @@ export default class WebSharedMethods extends CustomSharedMethods {
       console.log("connecting to " + url + "....");
       let socket = new WebSocket(url);
       socket.binaryType = "arraybuffer";
-      console.log("ssss : ", Saito.getInstance());
       let index = Saito.getInstance().addNewSocket(socket);
 
       socket.onmessage = (event: MessageEvent) => {
@@ -95,13 +94,13 @@ export default class WebSharedMethods extends CustomSharedMethods {
   }
 
   sendMessage(peerIndex: bigint, buffer: Uint8Array): void {
-    console.debug("sending message to peer : " + peerIndex + " with size : " + buffer.byteLength);
+    // console.debug("sending message to peer : " + peerIndex + " with size : " + buffer.byteLength);
     let socket = Saito.getInstance().getSocket(peerIndex);
     socket.send(buffer);
   }
 
   sendMessageToAll(buffer: Uint8Array, exceptions: Array<bigint>): void {
-    console.debug("sending message to  all with size : " + buffer.byteLength);
+    // console.debug("sending message to  all with size : " + buffer.byteLength);
     Saito.getInstance().sockets.forEach((socket, key) => {
       if (exceptions.includes(key)) {
         return;
