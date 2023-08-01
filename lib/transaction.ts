@@ -2,6 +2,7 @@ import type { WasmTransaction } from "saito-wasm/pkg/node/index";
 import Slip from "./slip";
 import Saito from "../saito";
 import WasmWrapper from "./wasm_wrapper";
+import { fromBase58 } from "./util";
 
 export enum TransactionType {
   Normal = 0,
@@ -112,11 +113,11 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
   }
 
   public isFrom(key: string): boolean {
-    return this.instance.is_from(key);
+    return this.instance.is_from(fromBase58(key));
   }
 
   public isTo(key: string): boolean {
-    return this.instance.is_to(key);
+    return this.instance.is_to(fromBase58(key));
   }
 
   public toJson() {
@@ -171,5 +172,9 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
         this.msg = {};
       }
     }
+  }
+
+  public clone() {
+    return new Transaction.Type(undefined, this.toJson());
   }
 }

@@ -1,5 +1,6 @@
 import type { WasmSlip } from "saito-wasm/pkg/node/index";
 import WasmWrapper from "./wasm_wrapper";
+import { fromBase58, toBase58 } from "./util";
 
 export enum SlipType {
   Normal = 0,
@@ -55,11 +56,17 @@ export default class Slip extends WasmWrapper<WasmSlip> {
   }
 
   public get publicKey(): string {
-    return this.instance.public_key;
+    if (this.instance.public_key == "") {
+      return "";
+    }
+    return toBase58(this.instance.public_key);
   }
 
   public set publicKey(key: string) {
-    this.instance.public_key = key;
+    if (key === "") {
+      this.instance.public_key = "";
+    }
+    this.instance.public_key = fromBase58(key);
   }
 
   public set index(index: number) {

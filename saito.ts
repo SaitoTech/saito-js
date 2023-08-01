@@ -5,6 +5,7 @@ import Factory from "./lib/factory";
 import Peer from "./lib/peer";
 import Wallet, {DefaultEmptyPrivateKey} from "./lib/wallet";
 import Blockchain from "./lib/blockchain";
+import {fromBase58, toBase58} from "./lib/util";
 
 // export enum MessageType {
 //     HandshakeChallenge = 1,
@@ -244,7 +245,7 @@ export default class Saito {
   }
 
   public verifySignature(buffer: Uint8Array, signature: string, publicKey: string): boolean {
-    return Saito.getLibInstance().verify_signature(buffer, signature, publicKey);
+    return Saito.getLibInstance().verify_signature(buffer, signature, fromBase58(publicKey));
   }
 
   public async createTransaction<T extends Transaction>(
@@ -254,7 +255,7 @@ export default class Saito {
     force_merge = false
   ): Promise<T> {
     let wasmTx = await Saito.getLibInstance().create_transaction(
-      publickey,
+      fromBase58(publickey),
       amount,
       fee,
       force_merge
@@ -284,7 +285,8 @@ export default class Saito {
   }
 
   public generatePublicKey(privateKey: string): string {
-    return Saito.getLibInstance().generate_public_key(privateKey);
+    let key = Saito.getLibInstance().generate_public_key(privateKey);
+    return toBase58(key);
   }
 
   public async propagateTransaction(tx: Transaction) {
@@ -330,31 +332,16 @@ export default class Saito {
     //   "saito.sendTransactionWithCallback : peer = " + peerIndex + " sig = " + transaction.signature
     // );
     let buffer = transaction.wasmTransaction.serialize();
-    // console.log(
-    //   "sendTransactionWithCallback : " +
-    //     peerIndex +
-    //     " with length : " +
-    //     buffer.byteLength +
-    //     " sent : ",
-    //   transaction.msg
-    // );
+
     await this.sendApiCall(buffer, peerIndex || BigInt(0), !!callback)
       .then((buffer: Uint8Array) => {
         if (callback) {
-          // console.log("deserializing tx. buffer length = " + buffer.byteLength);
           console.log("sendTransactionWithCallback. buffer length = " + buffer.byteLength);
 
           let tx = this.factory.createTransaction();
           tx.data = buffer;
           tx.unpackData();
-          // let tx = Transaction.deserialize(buffer, this.factory);
-          // if (tx) {
-          //     console.log("sendTransactionWithCallback received : ", tx);
-          //     return callback(tx.data);
-          // } else {
-          //     console.log("sendTransactionWithCallback sending direct buffer since tx deserialization failed");
           return callback(tx);
-          // }
         }
       })
       .catch((error) => {
@@ -364,10 +351,6 @@ export default class Saito {
         }
       });
   }
-
-  // public async propagateServices(peerIndex: bigint, services: string[]) {
-  //   return Saito.getLibInstance().propagate_services(peerIndex, services);
-  // }
 
   public async sendRequest(
     message: string,
