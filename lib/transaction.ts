@@ -1,7 +1,6 @@
 import type { WasmTransaction } from "saito-wasm/pkg/node/index";
 import Slip from "./slip";
 import Saito from "../saito";
-import Factory from "./factory";
 import WasmWrapper from "./wasm_wrapper";
 
 export enum TransactionType {
@@ -134,10 +133,10 @@ export default class Transaction extends WasmWrapper<WasmTransaction> {
     };
   }
 
-  public static deserialize(buffer: Uint8Array, factory: Factory): Transaction | null {
+  public deserialize(buffer: Uint8Array) {
     try {
-      let wasmTx = Transaction.Type.deserialize(buffer);
-      return factory.createTransaction(wasmTx);
+      this.instance = Transaction.Type.deserialize(buffer);
+      this.unpackData();
     } catch (e) {
       console.error(e);
       return null;
