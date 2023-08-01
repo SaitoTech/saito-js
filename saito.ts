@@ -411,16 +411,8 @@ export default class Saito {
     return this.blockchain;
   }
 
-  public testBufferIn(buffer: Uint8Array) {
-    return Saito.getLibInstance().test_buffer_in(buffer);
-  }
-
-  public testBufferOut(): Uint8Array {
-    return Saito.getLibInstance().test_buffer_out();
-  }
-
-  public printWasmMemUsage() {
-    // console.log("WASM memory usage : " + wasm.memory.buffer.byteLength);
+  public async getMempoolTxs() {
+    return Saito.getLibInstance().get_mempool_txs();
   }
 
   // public async loadWallet() {

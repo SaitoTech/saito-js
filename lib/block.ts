@@ -34,6 +34,10 @@ export default class Block extends WasmWrapper<WasmBlock> {
     return this.instance.hash;
   }
 
+  public get previousBlockHash(): string {
+    return this.instance.previous_block_hash;
+  }
+
   public serialize(): Uint8Array {
     return this.instance.serialize();
   }

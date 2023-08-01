@@ -120,4 +120,16 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
   }
 
   public async onNewBlock(block: Block, lc: boolean) {}
+
+  public async getLatestBlockId() {
+    return this.instance.get_latest_block_id();
+  }
+
+  public async getLongestChainHashAtId(blockId: bigint) {
+    return this.instance.get_longest_chain_hash_at_id(blockId);
+  }
+
+  public async getHashesAtId(blockId: bigint) {
+    return this.instance.get_hashes_at_id(blockId);
+  }
 }
