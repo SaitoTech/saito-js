@@ -17,15 +17,26 @@ export default class WebSharedMethods extends CustomSharedMethods {
       let index = Saito.getInstance().addNewSocket(socket);
 
       socket.onmessage = (event: MessageEvent) => {
-        // console.log("buffer : ", event.data);
-        Saito.getLibInstance().process_msg_buffer_from_peer(new Uint8Array(event.data), index);
+        try {
+          Saito.getLibInstance().process_msg_buffer_from_peer(new Uint8Array(event.data), index);
+        } catch (error) {
+          console.error(error);
+        }
       };
 
       socket.onopen = () => {
-        Saito.getLibInstance().process_new_peer(index, peerData);
+        try {
+          Saito.getLibInstance().process_new_peer(index, peerData);
+        } catch (error) {
+          console.error(error);
+        }
       };
       socket.onclose = () => {
-        Saito.getLibInstance().process_peer_disconnection(index);
+        try {
+          Saito.getLibInstance().process_peer_disconnection(index);
+        } catch (error) {
+          console.error(error);
+        }
       };
 
       console.log("connected to : " + url + " with peer index : " + index);
