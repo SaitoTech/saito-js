@@ -298,7 +298,7 @@ export default class Saito {
     peerIndex: bigint,
     waitForReply: boolean
   ): Promise<Uint8Array> {
-    console.log("saito.sendApiCall : peer = " + peerIndex + " wait for reply = " + waitForReply);
+    // console.log("saito.sendApiCall : peer = " + peerIndex + " wait for reply = " + waitForReply);
     let callbackIndex = this.callbackIndex++;
     if (waitForReply) {
       return new Promise((resolve, reject) => {
@@ -336,7 +336,7 @@ export default class Saito {
     await this.sendApiCall(buffer, peerIndex || BigInt(0), !!callback)
       .then((buffer: Uint8Array) => {
         if (callback) {
-          console.log("sendTransactionWithCallback. buffer length = " + buffer.byteLength);
+          // console.log("sendTransactionWithCallback. buffer length = " + buffer.byteLength);
 
           let tx = this.factory.createTransaction();
           tx.data = buffer;
@@ -358,7 +358,7 @@ export default class Saito {
     callback?: any,
     peerIndex?: bigint
   ): Promise<any> {
-    console.log("saito.sendRequest : peer = " + peerIndex);
+    // console.log("saito.sendRequest : peer = " + peerIndex);
     let wallet = await this.getWallet();
     let publicKey = await wallet.getPublicKey();
     let tx = await this.createTransaction(publicKey, BigInt(0), BigInt(0));
