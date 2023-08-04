@@ -5,8 +5,12 @@ import { fromBase58, toBase58 } from "./util";
 
 export const DefaultEmptyPrivateKey =
   "0000000000000000000000000000000000000000000000000000000000000000";
+
 export const DefaultEmptyPublicKey =
   "000000000000000000000000000000000000000000000000000000000000000000";
+
+export const DefaultEmptyBlockHash =
+  "0000000000000000000000000000000000000000000000000000000000000000";
 
 export default class Wallet extends WasmWrapper<WasmWallet> {
   public static Type: any;

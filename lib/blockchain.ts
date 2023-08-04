@@ -3,6 +3,7 @@ import WasmWrapper from "./wasm_wrapper";
 import Saito from "../saito";
 import Block from "./block";
 import Transaction from "./transaction";
+import { DefaultEmptyBlockHash } from "./wallet";
 
 export default class Blockchain extends WasmWrapper<WasmBlockchain> {
   public static Type: any;
@@ -24,6 +25,9 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
   public async affixCallbacks(block: Block) {}
 
   public async runCallbacks(block_hash: string, from_blocks_back: bigint) {
+    if (block_hash === DefaultEmptyBlockHash) {
+      return;
+    }
     let block = await Saito.getInstance().getBlock(block_hash);
     let callbacks = this.callbacks.get(block_hash);
     let callbackIndices = this.callbackIndices.get(block_hash);
@@ -93,7 +97,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
 
             if (run_callbacks) {
               let callback_block_hash = await this.instance.get_longest_chain_hash_at(i);
-              if (callback_block_hash !== "") {
+              if (callback_block_hash !== "" && callback_block_hash !== DefaultEmptyBlockHash) {
                 await this.runCallbacks(callback_block_hash, confirmation_count);
               }
             }
