@@ -35,6 +35,10 @@ export default class Block extends WasmWrapper<WasmBlock> {
     return this.instance.hash;
   }
 
+  public get block_type(): BlockType {
+    return this.instance.type;
+  }
+
   public get previousBlockHash(): string {
     return this.instance.previous_block_hash;
   }
