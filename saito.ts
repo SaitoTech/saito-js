@@ -197,11 +197,16 @@ export default class Saito {
     return Saito.getLibInstance().get_latest_block_hash();
   }
 
-  public async getBlock<B extends Block>(blockHash: string): Promise<B> {
+  public async getBlock<B extends Block>(blockHash: string): Promise<B | null> {
     // console.assert(!!Saito.libInstance, "wasm lib instance not set");
     // console.log("lib instance : ", Saito.getLibInstance());
-    let block = await Saito.getLibInstance().get_block(blockHash);
-    return Saito.getInstance().factory.createBlock(block) as B;
+    try {
+      let block = await Saito.getLibInstance().get_block(blockHash);
+      return Saito.getInstance().factory.createBlock(block) as B;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 
   // public async getPublicKey(): Promise<string> {
