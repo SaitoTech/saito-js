@@ -184,6 +184,7 @@ export default class Saito {
   }
 
   public removeSocket(index: bigint) {
+    console.log("Removing socket for : " + index);
     let socket = this.sockets.get(index);
     this.sockets.delete(index);
     socket.close();
