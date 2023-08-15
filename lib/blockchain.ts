@@ -42,14 +42,18 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
       let callbackIndices = this.callbackIndices.get(block_hash);
       let confirmations = this.confirmations.get(block_hash) || BigInt(-1);
       console.log(
-        `running callbacks. callbacks : ${callbacks?.length} confirmations : ${confirmations}`
+        `running callbacks for ${block_hash}. callbacks : ${callbacks?.length} confirmations : ${confirmations}`
       );
       if (Number(confirmations) && callbacks && callbackIndices) {
         for (let i = Number(confirmations) + 1; i < from_blocks_back; i++) {
-          for (let j = 0; j < callbacks.length; ++j) {
+          for (let j = 0; j < callbacks.length; j++) {
             try {
               if (callbacks[j] && callbackIndices[j]) {
                 await callbacks[j](block, block.transactions[callbackIndices[j]], i);
+              } else {
+                console.log(
+                  `callback ${j} is ${!!callbacks[j]} callbackIndices is ${!!callbackIndices[j]}`
+                );
               }
             } catch (error) {
               console.error(error);
@@ -58,6 +62,8 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
             }
           }
         }
+      } else {
+        console.log(`confirmations : ${confirmations}`);
       }
       this.confirmations.set(block_hash, from_blocks_back);
     } catch (error) {
@@ -137,9 +143,10 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
             let callback_block_hash = await this.instance.get_longest_chain_hash_at(
               block_id_in_which_to_delete_callbacks + BigInt(1) // because block ring starts from 1
             );
+            console.log(`deleting callbacks for : ${callback_block_hash}`);
             this.callbacks.delete(callback_block_hash);
             this.callbackIndices.delete(callback_block_hash);
-            this.confirmations.delete(callback_block_hash);
+            // this.confirmations.delete(callback_block_hash);
           }
         }
 
