@@ -42,13 +42,13 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
       let callbackIndices = this.callbackIndices.get(block_hash);
       let confirmations = this.confirmations.get(block_hash) || BigInt(-1);
       console.log(
-        `running callbacks for ${block_hash}. callbacks : ${callbacks?.length} confirmations : ${confirmations}`
+        `running callbacks for ${block_hash}. callbacks : ${callbacks?.length} indexes : ${callbackIndices?.length} confirmations : ${confirmations} from_blocks_back : ${from_blocks_back}`
       );
       if (Number(confirmations) && callbacks && callbackIndices) {
         for (let i = Number(confirmations) + 1; i < from_blocks_back; i++) {
           for (let j = 0; j < callbacks.length; j++) {
             try {
-              if (callbacks[j] && callbackIndices[j]) {
+              if (callbacks[j] !== undefined && callbackIndices[j] !== undefined) {
                 await callbacks[j](block, block.transactions[callbackIndices[j]], i);
               } else {
                 console.log(
@@ -105,17 +105,17 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
             block_id_to_run_callbacks_from = block_id_to_run_callbacks_from + BigInt(1);
           }
 
-          //console.log("block_id_to_run_callbacks_from = " + block_id_to_run_callbacks_from);
-          //console.log(
-          //   "block_id_in_which_to_delete_callbacks = " + block_id_in_which_to_delete_callbacks
-          // );
-
+          console.log("block_id_to_run_callbacks_from = " + block_id_to_run_callbacks_from);
+          console.log(
+            "block_id_in_which_to_delete_callbacks = " + block_id_in_which_to_delete_callbacks
+          );
+          console.log("block.id = " + block.id);
           if (block_id_to_run_callbacks_from > BigInt(0)) {
-            for (let i = block_id_to_run_callbacks_from; i <= block.id; i++) {
+            for (let i = block_id_to_run_callbacks_from; i <= block.id; i += BigInt(1)) {
+              // for (let i = block_id_to_run_callbacks_from; Number(i) <= Number(block.id); i++) {
               let confirmation_count = block.id - BigInt(i) + BigInt(1);
               let run_callbacks = true;
-
-              // if bid is less than our last-bid but it is still
+              // if bid is less than our last-bid, but it is still
               // the biggest BID we have, then we should avoid
               // running callbacks as we will have already run
               // them. We check TS as sanity check as well.
@@ -127,6 +127,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
                 }
               }
 
+              console.log(`i = ${i} confirmations = ${confirmation_count}`);
               if (run_callbacks) {
                 let callback_block_hash = await this.instance.get_longest_chain_hash_at(i);
                 if (callback_block_hash !== "" && callback_block_hash !== DefaultEmptyBlockHash) {
@@ -143,7 +144,11 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
             let callback_block_hash = await this.instance.get_longest_chain_hash_at(
               block_id_in_which_to_delete_callbacks + BigInt(1) // because block ring starts from 1
             );
-            console.log(`deleting callbacks for : ${callback_block_hash}`);
+            console.log(
+              `deleting callbacks for ${
+                block_id_in_which_to_delete_callbacks + BigInt(1)
+              }: ${callback_block_hash}`
+            );
             this.callbacks.delete(callback_block_hash);
             this.callbackIndices.delete(callback_block_hash);
             // this.confirmations.delete(callback_block_hash);
@@ -162,6 +167,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
         );
       }
     } catch (error) {
+      console.error("failed running callbacks");
       console.error(error);
     }
   }
