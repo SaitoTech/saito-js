@@ -22,9 +22,14 @@ export default class Block extends WasmWrapper<WasmBlock> {
   }
 
   public get transactions(): Array<Transaction> {
-    return this.instance.transactions.map((tx) => {
-      return Saito.getInstance().factory.createTransaction(tx);
-    });
+    try {
+      return this.instance.transactions.map((tx) => {
+        return Saito.getInstance().factory.createTransaction(tx);
+      });
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 
   public get id(): bigint {
