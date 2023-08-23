@@ -23,10 +23,17 @@ export default class Block extends WasmWrapper<WasmBlock> {
 
   }
 
-  public get toJson(): string {
+  public toJson(): string {
+
     try {
-      const json = JSON.stringify(this.transactions.map((tx) => tx.toJson()));
-      return json;
+      // new_block is stringified version of this block
+      return JSON.stringify({
+        id: JSON.stringify(this.id),
+        hash: this.hash,
+        type: JSON.stringify(this.block_type),
+        previous_block_hash: this.previousBlockHash,
+        transactions: this.transactions.map((tx) => tx.toJson()),
+      })
     } catch (error) {
       console.error(error);
     }
