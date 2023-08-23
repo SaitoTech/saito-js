@@ -26,7 +26,6 @@ export default class Block extends WasmWrapper<WasmBlock> {
   public toJson(): string {
     try {
       const json = JSON.stringify(this.transactions.map((tx) => tx.toJson()));
-      console.log(json, "this is the json")
       return json;
     } catch (error) {
       console.error(error);
@@ -37,7 +36,6 @@ export default class Block extends WasmWrapper<WasmBlock> {
 
   public get transactions(): Array<Transaction> {
     try {
-      this.toJson();
       return this.instance.transactions.map((tx) => {
         return Saito.getInstance().factory.createTransaction(tx);
       });
