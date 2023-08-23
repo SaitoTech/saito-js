@@ -58,7 +58,10 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
               }
             } catch (error) {
               console.error(error);
-              console.log("callback index : " + callbackIndices[j]);
+              console.error("callback index : " + callbackIndices[j]);
+              console.error("block type : " + block.block_type);
+              console.error("block id : " + block.id);
+              console.error("block hash : " + block.hash);
               console.error("tx causing error", block.transactions[callbackIndices[j]].msg);
             }
           }
