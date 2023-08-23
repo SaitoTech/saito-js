@@ -33,6 +33,7 @@ export default class WebSharedMethods extends CustomSharedMethods {
       };
       socket.onclose = () => {
         try {
+          console.log("socket.onclose : " + index);
           Saito.getLibInstance().process_peer_disconnection(index);
         } catch (error) {
           console.error(error);
@@ -46,6 +47,7 @@ export default class WebSharedMethods extends CustomSharedMethods {
   }
 
   disconnectFromPeer(peerIndex: bigint): void {
+    console.log("disconnect from peer : " + peerIndex);
     Saito.getInstance().removeSocket(peerIndex);
   }
 
