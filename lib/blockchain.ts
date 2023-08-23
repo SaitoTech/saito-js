@@ -41,14 +41,15 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
       let callbacks = this.callbacks.get(block_hash);
       let callbackIndices = this.callbackIndices.get(block_hash);
       let confirmations = this.confirmations.get(block_hash) || BigInt(-1);
-      console.log(
-        `running callbacks for ${block_hash}. callbacks : ${callbacks?.length} indexes : ${callbackIndices?.length} confirmations : ${confirmations} from_blocks_back : ${from_blocks_back}`
-      );
+      // console.debug(
+      //   `running callbacks for ${block_hash}. callbacks : ${callbacks?.length} indexes : ${callbackIndices?.length} confirmations : ${confirmations} from_blocks_back : ${from_blocks_back}`
+      // );
       if (Number(confirmations) && callbacks && callbackIndices) {
         for (let i = Number(confirmations) + 1; i < from_blocks_back; i++) {
           for (let j = 0; j < callbacks.length; j++) {
             try {
               if (callbacks[j] !== undefined && callbackIndices[j] !== undefined) {
+                // console.log(`run callback : ${j} for block : ${i}`);
                 await callbacks[j](block, block.transactions[callbackIndices[j]], i);
               } else {
                 console.log(
@@ -63,7 +64,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
           }
         }
       } else {
-        console.log(`confirmations : ${confirmations}`);
+        // console.log(`confirmations : ${confirmations}`);
       }
       this.confirmations.set(block_hash, from_blocks_back);
     } catch (error) {
@@ -105,11 +106,11 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
             block_id_to_run_callbacks_from = block_id_to_run_callbacks_from + BigInt(1);
           }
 
-          console.log("block_id_to_run_callbacks_from = " + block_id_to_run_callbacks_from);
-          console.log(
-            "block_id_in_which_to_delete_callbacks = " + block_id_in_which_to_delete_callbacks
-          );
-          console.log("block.id = " + block.id);
+          // console.log("block_id_to_run_callbacks_from = " + block_id_to_run_callbacks_from);
+          // console.log(
+          //   "block_id_in_which_to_delete_callbacks = " + block_id_in_which_to_delete_callbacks
+          // );
+          // console.log("block.id = " + block.id);
           if (block_id_to_run_callbacks_from > BigInt(0)) {
             for (let i = block_id_to_run_callbacks_from; i <= block.id; i += BigInt(1)) {
               // for (let i = block_id_to_run_callbacks_from; Number(i) <= Number(block.id); i++) {
@@ -127,7 +128,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
                 }
               }
 
-              console.log(`i = ${i} confirmations = ${confirmation_count}`);
+              // console.log(`i = ${i} confirmations = ${confirmation_count}`);
               if (run_callbacks) {
                 let callback_block_hash = await this.instance.get_longest_chain_hash_at(i);
                 if (callback_block_hash !== "" && callback_block_hash !== DefaultEmptyBlockHash) {
