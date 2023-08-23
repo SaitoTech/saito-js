@@ -23,7 +23,7 @@ export default class Block extends WasmWrapper<WasmBlock> {
 
   }
 
-  public toJson(): string {
+  public get toJson(): string {
     try {
       const json = JSON.stringify(this.transactions.map((tx) => tx.toJson()));
       return json;
