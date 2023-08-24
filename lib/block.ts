@@ -19,7 +19,26 @@ export default class Block extends WasmWrapper<WasmBlock> {
       block = new Block.Type();
     }
     super(block!);
+
+
   }
+
+  public toJson(): string {
+
+    try {
+      return JSON.stringify({
+        id: JSON.stringify(this.id),
+        hash: this.hash,
+        type: JSON.stringify(this.block_type),
+        previous_block_hash: this.previousBlockHash,
+        transactions: this.transactions.map((tx) => tx.toJson()),
+      })
+    } catch (error) {
+      console.error(error);
+    }
+    return ""
+  }
+
 
   public get transactions(): Array<Transaction> {
     try {
