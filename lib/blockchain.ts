@@ -22,7 +22,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
     return this.instance.reset();
   }
 
-  public async affixCallbacks(block: Block) { }
+  public async affixCallbacks(block: Block) {}
 
   public async runCallbacks(block_hash: string, from_blocks_back: bigint) {
     if (block_hash === DefaultEmptyBlockHash) {
@@ -45,12 +45,23 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
       //   `running callbacks for ${block_hash}. callbacks : ${callbacks?.length} indexes : ${callbackIndices?.length} confirmations : ${confirmations} from_blocks_back : ${from_blocks_back}`
       // );
       if (Number(confirmations) && callbacks && callbackIndices) {
+        let txs = block.transactions;
         for (let i = Number(confirmations) + 1; i < from_blocks_back; i++) {
           for (let j = 0; j < callbacks.length; j++) {
             try {
-              if (callbacks[j] !== undefined && callbackIndices[j] !== undefined) {
+              if (
+                callbacks[j] !== undefined &&
+                callbackIndices[j] !== undefined &&
+                txs !== undefined
+              ) {
                 // console.log(`run callback : ${j} for block : ${i}`);
-                await callbacks[j](block, block.transactions[callbackIndices[j]], i);
+                if (txs[callbackIndices[j]]) {
+                  await callbacks[j](block, txs[callbackIndices[j]], i);
+                } else {
+                  console.warn(
+                    `transaction is undefined for index : ${j} in block : ${block.hash} with id ${block.id}`
+                  );
+                }
               } else {
                 console.log(
                   `callback ${j} is ${!!callbacks[j]} callbackIndices is ${!!callbackIndices[j]}`
@@ -62,7 +73,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
               console.error("block type : " + block.block_type);
               console.error("block id : " + block.id);
               console.error("block hash : " + block.hash);
-              console.error("tx causing error", block.transactions[callbackIndices[j]].msg);
+              // console.error("tx causing error", txs?[callbackIndices[j]]?.msg);
             }
           }
         }
@@ -149,7 +160,8 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
               block_id_in_which_to_delete_callbacks + BigInt(1) // because block ring starts from 1
             );
             console.log(
-              `deleting callbacks for ${block_id_in_which_to_delete_callbacks + BigInt(1)
+              `deleting callbacks for ${
+                block_id_in_which_to_delete_callbacks + BigInt(1)
               }: ${callback_block_hash}`
             );
             this.callbacks.delete(callback_block_hash);
@@ -164,9 +176,9 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
       } else {
         console.log(
           "already have processed the callbacks. last_callback_block_id = " +
-          this.last_callback_block_id +
-          " block_id = " +
-          block_id
+            this.last_callback_block_id +
+            " block_id = " +
+            block_id
         );
       }
     } catch (error) {
@@ -175,7 +187,7 @@ export default class Blockchain extends WasmWrapper<WasmBlockchain> {
     }
   }
 
-  public async onNewBlock(block: Block, lc: boolean) { }
+  public async onNewBlock(block: Block, lc: boolean) {}
 
   public async getLatestBlockId() {
     return this.instance.get_latest_block_id();
