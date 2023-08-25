@@ -25,6 +25,7 @@ export default class Block extends WasmWrapper<WasmBlock> {
 
   public toJson(): string {
 
+
     try {
       return JSON.stringify({
         id: JSON.stringify(this.id),
@@ -33,6 +34,7 @@ export default class Block extends WasmWrapper<WasmBlock> {
         type: JSON.stringify(this.block_type),
         previous_block_hash: this.previousBlockHash,
         transactions: this.transactions.map((tx) => tx.toJson()),
+        timestamp: this.instance.timestamp,
 
       })
     } catch (error) {
